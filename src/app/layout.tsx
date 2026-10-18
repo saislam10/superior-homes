@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Marcellus } from "next/font/google";
+import { Lora, Source_Sans_3 } from "next/font/google";
 import { allowIndexing, siteConfig } from "@/config/site";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -8,16 +8,15 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { graph, organizationSchema, websiteSchema } from "@/lib/structured-data";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sourceSans = Source_Sans_3({
+  variable: "--font-source-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-// Flared display serif chosen to echo the Superior Homes logo lettering.
-const marcellus = Marcellus({
-  variable: "--font-marcellus",
-  weight: "400",
+// A warm, readable serif paired with a clear sans for a more established feel.
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin"],
   display: "swap",
 });
@@ -44,7 +43,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${marcellus.variable} antialiased`}>
+    <html lang="en" className={`${sourceSans.variable} ${lora.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"

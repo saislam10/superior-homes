@@ -40,7 +40,7 @@ Read this first if you are picking the project up. These decisions were made del
 | 2026-10-17 | Built from an empty repo on Next.js 16 / React 19 / Tailwind v4, every page statically prerendered. | Fast, cheap to host, SEO-friendly; no CMS needed at this size. |
 | 2026-10-17 | **Never invent business facts.** Unknown facts are `null` and render as yellow placeholders; samples are labeled and `noindex`. | Required by the original brief. The site must not claim credentials, prices, reviews, projects or stats that aren't verified. |
 | 2026-10-17 | **Naming:** the company is **Superior Homes**; the website/domain is **WichitaBuild.com**. | Clarified by the owner. The original brief implied the brand itself was "WichitaBuild"; that is no longer the case. |
-| 2026-10-17 | **Brand palette and logo come from the owner's logo** (navy `#1E1C58`, green `#4EB748`). Heading font Marcellus echoes the logo lettering. | Owner supplied the logo and asked for the theme to be built around it. |
+| 2026-10-17 | **Brand palette and logo come from the owner's logo** (navy `#1E1C58`, green `#4EB748`). Source Sans 3 and Lora provide a clear, warm typographic voice. | Owner supplied the logo and asked for the theme to be built around it; both fonts use the SIL Open Font License. |
 | 2026-10-17 | **Site map and homepage flow modeled on [lckansas.com](https://www.lckansas.com/)** (floor plans, available homes, communities, specs & finishes, finance, warranty, agents). | Owner request. |
 | 2026-10-17 | **Hybrid positioning:** LC's page set and homepage order, but messaging leads with custom building; plans and inventory are presented as starting points you can customize. | Owner chose this over a full production-builder model, to stay consistent with the brief's move away from cookie-cutter subdivision homes. |
 | 2026-10-17 | **Kept the existing visual style** (editorial, generous whitespace) rather than copying LC's look; no LC copy, photos or branding were reused. | Owner chose "keep current aesthetic"; copying another company's content would also raise copyright and misrepresentation issues. |
@@ -62,7 +62,7 @@ As of 2026-10-17:
 
 - **Next.js 16** (App Router, Turbopack, Cache Components enabled) · **React 19** · **TypeScript** (strict)
 - **Tailwind CSS v4** with design tokens in `src/app/globals.css`
-- **lucide-react** icons; fonts via `next/font` (Geist for text, Marcellus for headings, chosen to echo the logo lettering; self-hosted at build)
+- **lucide-react** icons; fonts via `next/font` (Source Sans 3 for text and Lora for headings; both self-hosted at build and licensed under SIL OFL 1.1)
 - No UI framework, no CMS, no client-side data fetching. Every page is prerendered to static HTML.
 
 > **Note for developers/agents:** Next.js 16 differs from earlier versions. Version-matched docs ship in `node_modules/next/dist/docs/`. With Cache Components enabled, for example, `dynamicParams` is not allowed and `generateStaticParams` must return at least one entry.
@@ -379,7 +379,7 @@ Technical go-live steps:
 
 - **Tokens** (`src/app/globals.css`, Tailwind v4 `@theme`):
   - Colors: `brand-50…900` (navy), `leaf-300/500/700` (green), `mist-100…500` (cool neutrals), `ink`, `ink-muted`, `ink-subtle`, `canvas`, `surface`, plus `draft-*` for placeholders.
-  - Fonts: `font-display` (Marcellus) and the default sans (Geist).
+  - Fonts: `font-display` (Lora) and the default sans (Source Sans 3).
 - **Contrast rules:** `leaf-500` (logo green) is decorative only (2.6:1 on white). Use `leaf-700` for green text on light backgrounds and `leaf-300` on navy. All current text pairs pass WCAG AA.
 - **Building blocks:**
   - `Section` (tones: `canvas`, `white`, `mist`, `navy`), `SectionHeading` (eyebrow + title + intro)
