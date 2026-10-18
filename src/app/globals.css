@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+/*
+ * Superior Homes design tokens.
+ * All brand colors, fonts and rhythm live here. Tailwind utilities are
+ * generated from @theme (e.g. bg-brand-800, text-ink-muted, font-display).
+ */
+@theme {
+  /*
+   * Palette derived from the Superior Homes logo
+   * (brand-source/superior-homes-logo-original.png):
+   *   navy  #1e1c58  — wordmark  → brand-800
+   *   green #4eb748  — rooftops  → leaf-500 (decorative only: 2.6:1 on white)
+   *   gray  #cccccc  — windows   → mist-300
+   */
+
+  /* Neutrals — crisp, slightly cool to sit with navy */
+  --color-canvas: #f8f9fb;
+  --color-surface: #ffffff;
+  --color-mist-100: #f1f3f6;
+  --color-mist-200: #e3e6ec;
+  --color-mist-300: #cccfd8;
+  --color-mist-500: #8d93a3;
+
+  /* Typography */
+  --color-ink: #1c1f2b;
+  --color-ink-muted: #4a5060;
+  --color-ink-subtle: #626878;
+
+  /* Brand navy — primary */
+  --color-brand-50: #eeeef6;
+  --color-brand-100: #dcdcec;
+  --color-brand-200: #b9b8d6;
+  --color-brand-500: #4a4888;
+  --color-brand-600: #33317a;
+  --color-brand-700: #29276a;
+  --color-brand-800: #1e1c58;
+  --color-brand-900: #151340;
+
+  /* Leaf green — accent */
+  --color-leaf-300: #8fd18a; /* text/icons on navy (8.5:1+) */
+  --color-leaf-500: #4eb748; /* logo green: rules, marks, decorative fills */
+  --color-leaf-700: #2e7a2a; /* green text on light backgrounds (≥4.8:1) */
+
+  /* Placeholder / draft markers (owner-facing) */
+  --color-draft-bg: #fff6dc;
+  --color-draft-border: #d9b44a;
+  --color-draft-ink: #5c4300;
+
+  --color-danger: #a12a1f;
+  --color-success: #2e7a2a;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-marcellus), ui-serif, Georgia, serif;
+
+  --container-site: 76rem;
+  --radius-card: 0.375rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-100);
+    color: var(--color-brand-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Native disclosure (FAQ) — hide default marker; we draw our own icon. */
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+/* Vertical rhythm for page sections. */
+@utility section-y {
+  padding-block: 4.5rem;
+  @media (width >= 64rem) {
+    padding-block: 7rem;
+  }
+}
+
+/* Body copy set for long-form reading (legal pages, project write-ups). */
+@utility prose-site {
+  max-width: 44rem;
+  color: var(--color-ink-muted);
+  line-height: 1.75;
+  & > * + * {
+    margin-top: 1.25em;
+  }
+  & h2 {
+    margin-top: 2.25em;
+    color: var(--color-ink);
+    font-size: 1.75rem;
+    line-height: 1.25;
+  }
+  & h3 {
+    margin-top: 1.75em;
+    color: var(--color-ink);
+    font-size: 1.3rem;
+  }
+  & ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  & li + li {
+    margin-top: 0.4em;
+  }
+  & a {
+    color: var(--color-brand-700);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+/* Custom chevron for native <select> controls. */
+@utility select-chevron {
+  appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%234d5450'%3E%3Cpath d='M5.3 7.3a1 1 0 0 1 1.4 0L10 10.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 1.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
