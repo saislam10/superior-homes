@@ -21,3 +21,4 @@ These patterns are deliberately business-agnostic so a sibling site (e.g. the se
 - **Brand assets** are generated from `brand-source/`; colors in `globals.css` derive from the logo (navy `brand-*`, green `leaf-*`, neutrals `mist-*`). `leaf-500` is decorative only.
 - **Cache Components is on:** no `dynamicParams`; `generateStaticParams` must return ≥ 1 entry; avoid `Date.now()`/`new Date()` in prerendered render paths.
 - **Validate before handing off:** `npm run check` (typecheck + lint + build).
+- **Before starting work,** read README.md → "Project history and key decisions", "Current state" and "Continuing development". Verify with `npm run check` and `node scripts/smoke-test.mjs`.

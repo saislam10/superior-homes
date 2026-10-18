@@ -10,6 +10,8 @@ The page set and homepage flow follow the structure of [lckansas.com](https://ww
 
 ## Contents
 
+- [Project history and key decisions](#project-history-and-key-decisions)
+- [Current state](#current-state)
 - [Tech stack](#tech-stack)
 - [Getting started](#getting-started)
 - [Commands](#commands)
@@ -22,9 +24,39 @@ The page set and homepage flow follow the structure of [lckansas.com](https://ww
 - [Deployment](#deployment)
 - [Domain migration (superiorhomesks.com → wichitabuild.com)](#domain-migration-superiorhomeskscom--wichitabuildcom)
 - [Pre-launch checklist](#pre-launch-checklist)
+- [Continuing development](#continuing-development)
+- [Testing and verification](#testing-and-verification)
+- [Roadmap / next steps](#roadmap--next-steps)
 - [Known limitations](#known-limitations)
 
 ---
+
+## Project history and key decisions
+
+Read this first if you are picking the project up. These decisions were made deliberately; don't undo them without checking with the owner.
+
+| Date | Decision | Why |
+| --- | --- | --- |
+| 2026-10-17 | Built from an empty repo on Next.js 16 / React 19 / Tailwind v4, every page statically prerendered. | Fast, cheap to host, SEO-friendly; no CMS needed at this size. |
+| 2026-10-17 | **Never invent business facts.** Unknown facts are `null` and render as yellow placeholders; samples are labeled and `noindex`. | Required by the original brief. The site must not claim credentials, prices, reviews, projects or stats that aren't verified. |
+| 2026-10-17 | **Naming:** the company is **Superior Homes**; the website/domain is **WichitaBuild.com**. | Clarified by the owner. The original brief implied the brand itself was "WichitaBuild"; that is no longer the case. |
+| 2026-10-17 | **Brand palette and logo come from the owner's logo** (navy `#1E1C58`, green `#4EB748`). Heading font Marcellus echoes the logo lettering. | Owner supplied the logo and asked for the theme to be built around it. |
+| 2026-10-17 | **Site map and homepage flow modeled on [lckansas.com](https://www.lckansas.com/)** (floor plans, available homes, communities, specs & finishes, finance, warranty, agents). | Owner request. |
+| 2026-10-17 | **Hybrid positioning:** LC's page set and homepage order, but messaging leads with custom building; plans and inventory are presented as starting points you can customize. | Owner chose this over a full production-builder model, to stay consistent with the brief's move away from cookie-cutter subdivision homes. |
+| 2026-10-17 | **Kept the existing visual style** (editorial, generous whitespace) rather than copying LC's look; no LC copy, photos or branding were reused. | Owner chose "keep current aesthetic"; copying another company's content would also raise copyright and misrepresentation issues. |
+| 2026-10-17 | **Search indexing off by default** (`NEXT_PUBLIC_ALLOW_INDEXING`). | So previews full of placeholders never get indexed. |
+| 2026-10-17 | Contact form **never claims delivery** unless a provider confirms it. | Honesty requirement in the brief. |
+
+A separate **roofing company website** is planned as its own project. Do not add roofing services, navigation, branding or schema here. Engineering patterns (config-driven facts, placeholder components, `buildMetadata`, JSON-LD builders) can be copied to that project, but the two sites should not share code or content at runtime.
+
+## Current state
+
+As of 2026-10-17:
+
+- **Done:** all 21 page templates (41 prerendered routes including sample detail pages), design system, logo/favicons, SEO (metadata, canonicals, sitemap, robots, JSON-LD), redirect framework for the old domain, contact form with validation and a pluggable delivery integration, documentation.
+- **Verified:** `npm run check` passes (typecheck, lint, build). `scripts/smoke-test.mjs` passes on 21 pages × 5 viewport widths with no horizontal overflow or console errors; mobile menu, skip link and contact form behave correctly. Lighthouse (production build): Accessibility 100, Best Practices 100; Performance 91–97 on mobile, 100 on desktop; SEO 100 with indexing enabled (it reads ~69 by design while `noindex` is on). The SEO 100 figure was measured before the LC-style pages were added; re-run it with indexing enabled to confirm.
+- **Not done (needs the owner or external accounts):** every item in the [pre-launch checklist](#pre-launch-checklist): real business details, real listings and photos, legal review, contact delivery provider, spam protection, hosting, domains, Search Console, old-site URL inventory.
+- **Repository:** [github.com/saislam10/superior-homes](https://github.com/saislam10/superior-homes), default branch `main`.
 
 ## Tech stack
 
@@ -55,6 +87,8 @@ npm run dev                  # http://localhost:3000
 | `npm run lint` | ESLint (Next.js core-web-vitals + TypeScript rules) |
 | `npm run typecheck` | Generate route types, then `tsc --noEmit` |
 | `npm run check` | Typecheck + lint + build — run before every deploy |
+| `node scripts/smoke-test.mjs` | Browser smoke test against a running build (see [Testing](#testing-and-verification)) |
+| `python scripts/generate-brand-assets.py` | Regenerate logo variants and favicons from `brand-source/` |
 
 ## Environment variables
 
@@ -90,7 +124,7 @@ src/
     site.ts                ★ Company name, domain, phone, email, address, social links
     navigation.ts          Header/footer/legal navigation
     images.ts              ★ Every image URL + alt text, in one place
-    service-areas.ts       ★ Communities (confirmed vs. proposed)
+    service-areas.ts       ★ Towns served (confirmed vs. proposed)
     redirects.ts           ★ Old-site → new-site redirect map
   data/
     floor-plans.ts         ★ Floor plans (drives /floor-plans and detail pages)
@@ -109,6 +143,10 @@ src/
     contact/               Validation (shared client/server) and delivery integration
 public/brand/              Logo variants generated from the original artwork
 brand-source/              Original logo file (source of truth for brand assets)
+scripts/
+  generate-brand-assets.py Rebuilds public/brand/* and favicons from brand-source/
+  smoke-test.mjs           Playwright-based browser checks (optional tooling)
+AGENTS.md                  Conventions for AI coding agents (top block is managed by Next.js)
 ```
 
 ★ = files the business is most likely to edit.
@@ -181,7 +219,7 @@ The logo comes from the owner-supplied artwork in `brand-source/superior-homes-l
 | `public/brand/superior-homes-mark-house.png` | The large house from the logo, isolated |
 | `src/app/icon.png`, `apple-icon.png`, `favicon.ico` | Favicons: the large house on a navy tile |
 
-If a higher-resolution or vector (SVG/AI/EPS) logo is available, regenerate these from it. The source PNG is only 560 × 560.
+If a higher-resolution or vector (SVG/AI/EPS) logo becomes available, export a transparent PNG with the same layout, save it over `brand-source/superior-homes-logo-original.png`, and run `python scripts/generate-brand-assets.py` (needs `pip install Pillow`). If the new artwork's layout differs, adjust the coordinates at the top of the script. The current source PNG is only 560 × 560, which limits sharpness on large retina displays.
 
 The color palette in `globals.css` is derived from the logo: navy `#1E1C58` (primary), green `#4EB748` (accent; decorative use only, since it fails text contrast on white), and a deeper green `#2E7A2A` for green text.
 
@@ -316,7 +354,117 @@ Technical go-live steps:
 - [ ] Google Business Profile website link updated
 - [ ] Search the codebase for `null` values in `site.ts` and yellow placeholders on every page; none should remain
 
+## Continuing development
+
+### Conventions (follow these)
+
+- **Facts live in config/data, never in components.** Business facts: `src/config/site.ts`. Images: `src/config/images.ts`. Content: `src/data/*`. Components only render.
+- **Unknown = `null`.** Render unknowns with `<ValueOrPlaceholder>` or `<Placeholder>` (`src/components/ui/Placeholder.tsx`). Mark whole sections that need owner input with `<DraftNotice>`. Never fill a gap with a plausible-sounding guess.
+- **Samples are flagged.** Listing data uses `isSample`; FAQs use `needsOwnerReview`; service areas use `status: "proposed"`. Flagged content must stay visibly labeled, `noindex`, and out of the sitemap and JSON-LD.
+- **Every page exports metadata** via `buildMetadata({ title, description, path, image?, noIndex? })` from `src/lib/seo.ts`. Titles must be unique; keep them under ~60 characters including the ` | Superior Homes` suffix.
+- **One `<h1>` per page**, normally rendered by `<PageHero>`, which also renders breadcrumbs and their JSON-LD.
+- **Server Components by default.** The only client components are `NavLink`, `MobileMenu`, `ContactForm` and `error.tsx`. Keep it that way unless interactivity requires otherwise.
+- **Structured data** goes through `src/lib/structured-data.ts` and renders only via `<JsonLd>`. Trusted data only.
+- **Copy tone:** plain, warm, specific; no superlatives ("best builder in Wichita"), no keyword stuffing, no unverifiable claims.
+
+### Next.js 16 / Cache Components gotchas
+
+- `export const dynamicParams` is **not allowed**. Unknown slugs fall through to `notFound()`.
+- `generateStaticParams` must return **at least one** entry, so keep at least one item in each listing data file.
+- Avoid `Date.now()` / `new Date()` in prerendered render paths (the footer has no year for this reason). Inside server actions it's fine.
+- Route props use the global helpers `PageProps<"/route/[slug]">` and `LayoutProps<"/">`; `params` is a Promise.
+- When unsure, read the version-matched docs in `node_modules/next/dist/docs/` rather than relying on memory of older Next.js versions.
+
+### Design system
+
+- **Tokens** (`src/app/globals.css`, Tailwind v4 `@theme`):
+  - Colors: `brand-50…900` (navy), `leaf-300/500/700` (green), `mist-100…500` (cool neutrals), `ink`, `ink-muted`, `ink-subtle`, `canvas`, `surface`, plus `draft-*` for placeholders.
+  - Fonts: `font-display` (Marcellus) and the default sans (Geist).
+- **Contrast rules:** `leaf-500` (logo green) is decorative only (2.6:1 on white). Use `leaf-700` for green text on light backgrounds and `leaf-300` on navy. All current text pairs pass WCAG AA.
+- **Building blocks:**
+  - `Section` (tones: `canvas`, `white`, `mist`, `navy`), `SectionHeading` (eyebrow + title + intro)
+  - `Container`, `ButtonLink` / `Button` / `TextLink`
+  - `PageHero`, `ConsultationCta`
+  - `FloorPlanCard`, `HomeCard`, `CommunityCard`, `ProjectCard`, `SpecRow`, `StatusBadge`
+  - `FaqList`, `Breadcrumbs`, `TextField` / `SelectField` / `TextAreaField`
+- **Layout rhythm:** `section-y` utility for section padding, `max-w-site` container, `rounded-card` radius. The desktop nav appears at `xl` (1280px); below that the menu button is used.
+
+### Common tasks
+
+**Add a new page**
+
+1. Create `src/app/<slug>/page.tsx`. Export `metadata = buildMetadata({ title, description, path: "/<slug>" })`.
+2. Start the page with `<PageHero eyebrow title intro breadcrumbs={[{ name, path }]} />`, then `<Section>` blocks, usually ending with `<ConsultationCta />`.
+3. Add the path to `staticRoutes` in `src/app/sitemap.ts`.
+4. Add it to `mainNav`, `secondaryNav` and/or `footerNav` in `src/config/navigation.ts`. Keep `mainNav` to about 6 items or the header will crowd.
+5. Add it to the `pages` list in `scripts/smoke-test.mjs`, then run `npm run check` and the smoke test.
+
+**Add a new listing type** (e.g. "Lots for sale"): copy the floor-plans pattern.
+
+1. Data file with a type, an `isSample` flag, `realX` and `getX(slug)` helpers.
+2. Card component in `Listing.tsx`.
+3. Index page plus a `[slug]/page.tsx` with `generateStaticParams`, `generateMetadata` (`noIndex: isSample`) and `notFound()`.
+4. Sitemap entries for real items only.
+
+**Change contact details or hours:** edit `src/config/site.ts`. Phone and email automatically appear in the footer, contact page, closing CTA buttons and JSON-LD.
+
+**Replace stock photos:** see [Images](#images). Update `alt` text to describe the real photo.
+
+**Rename or move a page:** add an entry to `internalRedirects` in `src/config/redirects.ts`, update navigation and the sitemap, and search the codebase for hard-coded links to the old path.
+
+**Connect the contact form:** set the env vars in [Contact form](#contact-form) on the host, redeploy, send a test, and confirm it arrives.
+
+### Troubleshooting
+
+- **Build error about `generateStaticParams` returning an empty array:** a listing data file has no entries left; keep at least one.
+- **Build error from `[redirects]`:** a redirect map entry creates a loop or chain; point it at the final URL.
+- **Remote image fails to load:** its host is missing from `images.remotePatterns` in `next.config.ts`.
+- **Changes to `NEXT_PUBLIC_*` vars have no effect:** they're inlined at build time; rebuild/redeploy.
+- **`next dev` re-adds a block to `AGENTS.md`:** expected; Next manages that block. Commit it.
+
+## Testing and verification
+
+There is no unit-test suite; the code is mostly declarative content. Verification is done with:
+
+1. **`npm run check`.** Typecheck, lint and production build. Required before every deploy.
+2. **Browser smoke test (`scripts/smoke-test.mjs`).** Run it after any layout, navigation or form change:
+   ```bash
+   npm install --no-save playwright-core   # one-time; not a project dependency
+   npm run build && npm start              # terminal 1
+   node scripts/smoke-test.mjs             # terminal 2 (BASE_URL / CHROME_PATH env vars optional)
+   ```
+   It checks every page at 320/390/768/1024/1440px for HTTP 200, horizontal overflow, console errors and a single `<h1>`, then tests the mobile menu, skip link and contact form. Uses your locally installed Chrome; no browser download.
+3. **Lighthouse.** Use a production build. Build with `NEXT_PUBLIC_ALLOW_INDEXING=true` when measuring SEO, otherwise the deliberate `noindex` lowers the score:
+   ```bash
+   npx lighthouse http://localhost:3000/ --preset=desktop --view
+   ```
+4. **Manual checks after content changes:** look for leftover yellow placeholders, read new copy for unverified claims, and check that new images have accurate alt text.
+5. **After launch:** Google's [Rich Results Test](https://search.google.com/test/rich-results) on the homepage and a project page; `curl -I` spot-checks of old-domain redirects; Search Console coverage and Core Web Vitals reports.
+
+## Roadmap / next steps
+
+In rough priority order:
+
+1. ~~Make the initial git commit and push to a remote.~~ Done.
+2. **Collect owner information** (pre-launch checklist) and replace placeholders. Start with contact details, logo source file, service areas and real listings, which unlock the most content.
+3. **Deploy a preview** (e.g. Vercel) with indexing off, for owner review.
+4. **Connect contact delivery** (Resend or CRM webhook) and add Cloudflare Turnstile.
+5. **Crawl `superiorhomesks.com`** and fill in `legacyPathMap`.
+6. **Replace stock imagery** with real project photography as it becomes available.
+7. **Legal review** of Privacy and Terms; decide on analytics and consent.
+8. **Launch:** domains, `NEXT_PUBLIC_ALLOW_INDEXING=true`, Search Console, sitemap, Change of Address, Google Business Profile link.
+9. **Post-launch options** (only if the business wants them):
+   - A headless CMS or simple admin for listings, if inventory changes too often for code edits.
+   - Filtering on Available Homes (by community, beds, status).
+   - Downloadable floor-plan PDFs or drawings.
+   - `RealEstateListing`/`Offer` schema on real listings, once pricing is maintained.
+   - Unique location pages for confirmed communities with real content.
+   - Testimonials (verified, with permission).
+
 ## Known limitations
 
 - `npm audit` reports high-severity advisories in `braces` via `eslint-config-next`. These are development-only lint dependencies and are not shipped to the browser or server. The suggested `--force` fix downgrades Next's ESLint config to v14, so it hasn't been applied. Re-check when `eslint-config-next` updates.
 - Stock images are served from Unsplash through Next.js image optimization until replaced with local project photos.
+- The logo source is a 560 × 560 PNG; logos and favicons are only as sharp as that source allows.
+- The stats bar, Specs & Finishes, Warranty, Finance and Agents pages are mostly placeholders until the owner provides content. They are structurally complete but not publishable as-is.
+- No script Content-Security-Policy (see [Deployment](#deployment)), and no rate limiting on the contact form yet.
