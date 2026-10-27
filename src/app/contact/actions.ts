@@ -2,6 +2,8 @@
 
 import { deliverContact } from "@/lib/contact/delivery";
 import { readContactFields, validateContact, type ContactFields, type FieldErrors } from "@/lib/contact/schema";
+import { availableHomes } from "@/data/available-homes";
+import { absoluteUrl } from "@/config/site";
 
 export type ContactState = {
   status: "idle" | "invalid" | "delivered" | "not_configured" | "failed" | "rejected";
@@ -32,11 +34,14 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
   // --- Validation (authoritative) -----------------------------------------
   const raw = readContactFields(formData);
   const errors = validateContact(raw);
+  const property = raw.mlsNumber ? availableHomes.find(home => home.mlsNumber === raw.mlsNumber && !home.isSample && home.status !== "sold") : undefined;
+  if (raw.mlsNumber && !property && !errors.mlsNumber) errors.mlsNumber = "We couldn’t find that MLS number in our current listings. Please check the number or contact us directly.";
   if (Object.keys(errors).length > 0) {
     return { status: "invalid", errors, values: raw };
   }
 
   const fields: ContactFields = {
+    mlsNumber: property?.mlsNumber ?? "",
     name: raw.name.trim(),
     email: raw.email.trim(),
     phone: raw.phone.trim(),
@@ -44,7 +49,9 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
     lot: raw.lot,
     budget: raw.budget,
     timeline: raw.timeline,
-    details: raw.details.trim(),
+    details: property
+      ? `Property: ${property.address}${property.city ? `, ${property.city}` : ""}\nMLS #: ${property.mlsNumber}\nListing: ${absoluteUrl(`/available-homes/${property.slug}`)}\n\n${raw.details.trim()}`
+      : raw.details.trim(),
   };
 
   // --- Delivery ------------------------------------------------------------

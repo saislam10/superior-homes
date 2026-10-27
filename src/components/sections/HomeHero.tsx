@@ -1,11 +1,11 @@
 import Image from "next/image";
-import { images } from "@/config/images";
+import { remingtonGallery } from "@/config/images";
 import { siteConfig } from "@/config/site";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 
 export function HomeHero() {
-  const hero = images.heroExterior;
+  const hero = remingtonGallery[0];
 
   return (
     <section aria-labelledby="hero-heading" className="relative isolate overflow-hidden bg-brand-900 text-white">

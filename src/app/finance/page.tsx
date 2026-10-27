@@ -5,6 +5,7 @@ import { ConsultationCta } from "@/components/sections/ConsultationCta";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { DraftNotice, Placeholder } from "@/components/ui/Placeholder";
 import { TextLink } from "@/components/ui/Button";
+import { previousSiteReview } from "@/data/previous-site-review";
 
 const path = "/finance";
 
@@ -52,6 +53,16 @@ export default function FinancePage() {
         <DraftNotice title="General information" className="mb-12 max-w-3xl">
           This page is general education, not financial advice, and Superior Homes is not a lender. Loan programs,
           requirements and rates vary — talk with a licensed lender about your situation.
+        </DraftNotice>
+        <DraftNotice title="Previous financing claims — owner to confirm" className="mb-10 max-w-3xl">
+          The former website stated that no construction loan was required, a small deposit could start a project, and
+          Superior Homes financed construction until closing. Confirm the current policy and have the language
+          reviewed before publishing any of these claims.
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            {previousSiteReview.financingClaims.map((claim) => (
+              <li key={claim}>{claim}</li>
+            ))}
+          </ul>
         </DraftNotice>
         <SectionHeading id="finance-paths-heading" eyebrow="Your options" title="Common ways to finance." />
         <ul className="mt-10 grid gap-10 md:grid-cols-3">

@@ -20,7 +20,7 @@ import { submitContact, type ContactState } from "./actions";
 const initialState: ContactState = { status: "idle" };
 
 /** Field order, used to focus the first invalid field. */
-const fieldOrder: ContactFieldName[] = ["name", "email", "phone", "location", "lot", "budget", "timeline", "details"];
+const fieldOrder: ContactFieldName[] = ["mlsNumber", "name", "email", "phone", "location", "lot", "budget", "timeline", "details"];
 
 function focusFirstError(form: HTMLFormElement | null, errs: FieldErrors) {
   const first = fieldOrder.find((f) => errs[f]);
@@ -28,8 +28,9 @@ function focusFirstError(form: HTMLFormElement | null, errs: FieldErrors) {
 }
 
 type DirectContact = { phone: string | null; email: string | null };
+type PropertyInquiry = { mlsNumber: string; address: string; city: string | null };
 
-export function ContactForm({ direct }: { direct: DirectContact }) {
+export function ContactForm({ direct, property }: { direct: DirectContact; property?: PropertyInquiry }) {
   const [state, formAction, pending] = useActionState(submitContact, initialState);
   const [clientErrors, setClientErrors] = useState<FieldErrors | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -106,7 +107,7 @@ export function ContactForm({ direct }: { direct: DirectContact }) {
           {direct.email && (
             <>
               {direct.phone ? " or " : " at "}
-              <a href={`mailto:${direct.email}`} className="font-semibold underline">
+              <a href={`mailto:${direct.email}${property ? `?subject=${encodeURIComponent(`Property inquiry — MLS #${property.mlsNumber} — ${property.address}`)}&body=${encodeURIComponent(values?.details ?? `I’m interested in ${property.address} (MLS #${property.mlsNumber}).`)}` : ""}`} className="font-semibold underline">
                 {direct.email}
               </a>
             </>
@@ -184,7 +185,27 @@ export function ContactForm({ direct }: { direct: DirectContact }) {
         Fields marked <span className="text-danger">*</span> are required.
       </p>
 
+      {property && (
+        <aside aria-label="Property inquiry" className="rounded-card border border-brand-200 bg-brand-50 p-4 text-ink">
+          <p className="font-medium">Inquiry about {property.address}</p>
+          {property.city && <p className="mt-1 text-sm text-ink-muted">{property.city}</p>}
+          <p className="mt-2 text-sm text-ink-muted">The MLS number and property address will be included with your message.</p>
+          <Link href="/contact#form-heading" className="mt-3 inline-block text-sm text-brand-800 underline underline-offset-4">Ask about a different property</Link>
+        </aside>
+      )}
+
       <div className="grid gap-6 sm:grid-cols-2">
+        <TextField
+          id="mlsNumber"
+          label="MLS number"
+          hint={property ? "Selected property" : "For a listed property, enter its MLS number. Leave blank for a general inquiry."}
+          inputMode="numeric"
+          maxLength={10}
+          readOnly={Boolean(property)}
+          defaultValue={values?.mlsNumber ?? property?.mlsNumber ?? ""}
+          error={errors.mlsNumber}
+          className="sm:col-span-2"
+        />
         <TextField
           id="name"
           label="Name"
@@ -217,10 +238,10 @@ export function ContactForm({ direct }: { direct: DirectContact }) {
         />
         <TextField
           id="location"
-          label="Where do you hope to build?"
+          label={property ? "Location" : "Where do you hope to build?"}
           hint="A city, neighborhood or general area is fine."
           maxLength={limits.location}
-          defaultValue={values?.location}
+          defaultValue={values?.location ?? property?.city ?? undefined}
           error={errors.location}
         />
         <SelectField id="lot" label="Do you have a lot?" options={lotOptions} defaultValue={values?.lot ?? ""} error={errors.lot} />
@@ -242,11 +263,11 @@ export function ContactForm({ direct }: { direct: DirectContact }) {
         />
         <TextAreaField
           id="details"
-          label="Tell us about your project"
+          label={property ? "Your question about this property" : "Tell us about your project"}
           required
           hint="Size, style, must-haves, questions — whatever is on your mind."
           maxLength={limits.details}
-          defaultValue={values?.details}
+          defaultValue={values?.details ?? (property ? `I’m interested in ${property.address} (MLS #${property.mlsNumber}). Please contact me with more information.` : undefined)}
           error={errors.details}
           className="sm:col-span-2"
         />

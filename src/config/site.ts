@@ -49,9 +49,9 @@ export const siteConfig = {
 
   contact: {
     /** E.164 or display format. Example: "+1-316-555-0100". Do NOT guess. */
-    phone: null as string | null,
+    phone: "(316) 440-6000" as string | null,
     /** Public inbox for inquiries. Do NOT guess. */
-    email: null as string | null,
+    email: "kansashomes1@gmail.com" as string | null,
     /**
      * Physical/mailing address. Leave `null` if the business is a
      * service-area business that does not publish a street address

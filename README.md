@@ -12,6 +12,7 @@ The page set and homepage flow follow the structure of [lckansas.com](https://ww
 
 - [Project history and key decisions](#project-history-and-key-decisions)
 - [Current state](#current-state)
+- [Previous website review](#previous-website-review)
 - [Tech stack](#tech-stack)
 - [Getting started](#getting-started)
 - [Commands](#commands)
@@ -58,6 +59,18 @@ As of 2026-10-17:
 - **Not done (needs the owner or external accounts):** every item in the [pre-launch checklist](#pre-launch-checklist): real business details, real listings and photos, legal review, contact delivery provider, spam protection, hosting, domains, Search Console, old-site URL inventory.
 - **Repository:** [github.com/saislam10/superior-homes](https://github.com/saislam10/superior-homes), default branch `main`.
 
+## Previous website review
+
+The previous public site at [superiorhomesks.com](https://superiorhomesks.com/) was reviewed for content relevant to this custom-home site. Candidate facts and claims are stored in `src/data/previous-site-review.ts` and appear only in visible draft notices. They are not treated as verified company facts, inserted into `siteConfig`, or emitted in structured data.
+
+- **Contact details confirmed by owner:** use `(316) 440-6000` and `kansashomes1@gmail.com`, now set in `src/config/site.ts`. The old site's conflicting phone number is historical only. Its office address and weekday hours with weekends by appointment still need confirmation.
+- **Past build locations:** the old site shows work associated with Wichita, Derby, Bel Aire and Haysville. These are signals of past activity, not confirmation of current service coverage; they remain proposed until the owner confirms them.
+- **Feature claims:** the old homepage mentions energy-efficient windows, granite countertops throughout and LED lighting. Confirm what is currently standard before adding these to Specs & Finishes.
+- **Financing claims:** the old homepage says no construction loan is needed, a small deposit can start a project, and Superior Homes finances construction until closing. These are significant financial claims; confirm the current policy and review wording before publication.
+- **Process copy:** the old process page includes useful stage names, but also mentions New Home Centers, Flat Branch Home Loans and Schuber Mitchell homeowners. Its descriptive copy is not safe to reuse as Superior Homes policy.
+- **Portfolio:** the old Our Homes page contains more than 100 home entries with details and third-party tour links. Add projects only after confirming details and obtaining homeowner permission for identifiable information and photography.
+- **Out of scope:** the old site also advertises remodeling, painting and roofing. Those services were not added here; roofing belongs to its separate website. The old blog and legal copy were not imported.
+
 ## Tech stack
 
 - **Next.js 16** (App Router, Turbopack, Cache Components enabled) · **React 19** · **TypeScript** (strict)
@@ -74,7 +87,7 @@ As of 2026-10-17:
 ```bash
 npm install
 cp .env.example .env.local   # optional; everything works with no env vars
-npm run dev                  # http://localhost:3000
+npm run dev                  # http://localhost:3011
 ```
 
 ## Commands
@@ -98,7 +111,8 @@ All are optional. See `.env.example` for the full annotated list.
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | build | Canonical origin. Defaults to `https://wichitabuild.com`. |
 | `NEXT_PUBLIC_ALLOW_INDEXING` | build | Must be `true` for search engines to index the site. **Set only on production, after launch checklist.** |
-| `CONTACT_DELIVERY_PROVIDER` | server | `webhook` or `resend`. Unset = form delivery disabled (visitors are told their message was not sent). |
+| `CONTACT_DELIVERY_PROVIDER` | server | `hubspot`, `webhook` or `resend`. Unset = form delivery disabled (visitors are told their message was not sent). |
+| `HUBSPOT_PORTAL_ID`, `HUBSPOT_FORM_ID` | server | HubSpot account portal ID and the HubSpot consultation form ID. |
 | `CONTACT_WEBHOOK_URL`, `CONTACT_WEBHOOK_SECRET` | server | Webhook delivery target and optional bearer token. |
 | `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` | server | Email delivery via Resend. |
 | `GOOGLE_SITE_VERIFICATION` | build | Search Console meta-tag token. |
@@ -137,6 +151,7 @@ src/
     process.ts             ★ Building-process stages
     cost-factors.ts        Cost-to-build guide content
     approach.ts            "Why Superior Homes" points
+    previous-site-review.ts Prior-site facts and claims marked for owner review
   lib/
     seo.ts                 buildMetadata(): titles, canonicals, Open Graph, robots
     structured-data.ts     JSON-LD builders (verified facts only)
@@ -166,7 +181,9 @@ Naming convention used throughout: `name` = **Superior Homes** (the company: cop
 
 ### Images
 
-All images are referenced through **`src/config/images.ts`**. The current images are licensed Unsplash stock photos, flagged `isStock: true`, used for visual direction only; nowhere does the site present them as the company's work.
+All images are referenced through **`src/config/images.ts`**. Owner-supplied photography for **13 portfolio projects** in Bel Aire, Valley Center, Wichita and Park City is stored locally in `public/images/projects/` and registered as `remingtonGallery`, `forbesGallery` and `portfolioGalleries` with `isStock: false`. These galleries appear in the portfolio; the homepage uses the Remington exterior and living room. The Bunker Hill project includes units 100 and 200 together, matching its source gallery. Photo sources and import details are recorded in `public/images/projects/README.md`. Prices, availability, completion dates and numerical specifications have not been inferred from the photos.
+
+Remaining Unsplash stock photos are flagged `isStock: true` and used for visual direction or clearly marked sample entries. Sample projects remain accessible at their existing URLs but are omitted from the portfolio grid while real projects are available.
 
 To swap in real photography:
 
@@ -194,7 +211,7 @@ Edit **`src/data/portfolio.ts`**. Each entry becomes a page at `/portfolio/<slug
 All three work the same way as the portfolio: edit the data file, and pages, cards, homepage rows and sitemap entries follow automatically.
 
 - **Floor plans** (`src/data/floor-plans.ts`): name, beds/baths/sq ft, stories, garage, description, customization ideas, photos. `startingPrice` stays `null` (shown as "Contact for pricing") unless the owner provides a current figure.
-- **Available homes** (`src/data/available-homes.ts`): address, city, links to a community and plan, `status` (`available`, `under-construction`, `pending`, `sold`), specs, price (or `null`), estimated completion. Inventory goes stale fast, so update status promptly. Sold homes are `noindex` and drop out of listings.
+- **Available homes** (`src/data/available-homes.ts`): the current inventory contains sale listings only; rentals were removed at the owner request. The data model retains separate rental pricing and terms for possible future use. Rentals can include monthly rent, deposit, lease term, application fee, pet policy and utilities. Use `null` for MLS details that are not provided; update availability promptly because listings go stale. Sold or leased homes are `noindex` and drop out of the active listings.
 - **Communities** (`src/data/communities.ts`): name, city, description and highlights. Only list places the company actually builds, each with genuinely unique details. `/service-areas` lists towns; communities are specific neighborhoods or developments.
 - Entries with `isSample: true` are badged, `noindex` and kept out of the sitemap and homepage counts. Remove them once real entries exist, but keep at least one entry in each file (Cache Components build requirement).
 - The homepage "Looking for something specific?" inventory band appears automatically once at least one real (non-sample) home is listed.
@@ -229,6 +246,7 @@ The color palette in `globals.css` is derived from the logo: navy `#1E1C58` (pri
 
 - **Validation:** shared rules in `src/lib/contact/schema.ts` run in the browser for instant feedback *and* authoritatively on the server. The form also works without JavaScript.
 - **Delivery:** `src/lib/contact/delivery.ts` is the single integration point.
+  - `CONTACT_DELIVERY_PROVIDER=hubspot` → submits the consultation to a HubSpot form using `HUBSPOT_PORTAL_ID` and `HUBSPOT_FORM_ID`. No private app token is needed. The HubSpot form must include `firstname`, `lastname`, `email`, `phone`, and the custom contact properties `intended_build_location`, `lot_status`, `approximate_budget`, `desired_timeline`, and `project_details`. Make `lastname`, `phone`, and the custom properties optional; use text fields for the custom properties so the form accepts the site's existing answers. The form's internal property names must match exactly.
   - `CONTACT_DELIVERY_PROVIDER=webhook` → JSON `POST` to `CONTACT_WEBHOOK_URL` (HubSpot, a CRM inbound webhook, Zapier/Make, or your own endpoint). Optional `CONTACT_WEBHOOK_SECRET` is sent as a bearer token.
   - `CONTACT_DELIVERY_PROVIDER=resend` → plain-text email through the [Resend](https://resend.com) API. Verify the sending domain in Resend first.
   - **Unset → nothing is sent**, and the visitor is told plainly that their message was *not* sent and how to reach the company directly. The site never claims a delivery that didn't happen.
@@ -236,6 +254,8 @@ The color palette in `globals.css` is derived from the logo: navy `#1E1C58` (pri
 - **Privacy:** the app does not store or log submissions; it only passes them to the configured provider. Server logs record provider failures without personal data.
 - **Anti-spam (built in):** a hidden honeypot field, and a time trap rejecting submissions made < 3 s after the form loaded.
 - **Anti-spam (still to configure):** for production traffic, add [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) (verify its token in `actions.ts`) and/or rate limiting at your host or edge (e.g. Vercel Firewall, Cloudflare WAF rules). In-memory rate limiting is not reliable on serverless hosting, so it isn't included.
+
+To connect HubSpot, create a form in HubSpot with the property names above, then copy its portal ID and form ID into the deployment's server environment variables. If the HubSpot form requires consent fields, add matching consent capture to this page before making the form live; this page currently has a privacy notice but no consent checkbox.
 
 The budget ranges in the form are visitor self-reported choices, not company prices. Edit `budgetOptions` in `schema.ts` as you see fit.
 
@@ -363,7 +383,7 @@ Technical go-live steps:
 - **Samples are flagged.** Listing data uses `isSample`; FAQs use `needsOwnerReview`; service areas use `status: "proposed"`. Flagged content must stay visibly labeled, `noindex`, and out of the sitemap and JSON-LD.
 - **Every page exports metadata** via `buildMetadata({ title, description, path, image?, noIndex? })` from `src/lib/seo.ts`. Titles must be unique; keep them under ~60 characters including the ` | Superior Homes` suffix.
 - **One `<h1>` per page**, normally rendered by `<PageHero>`, which also renders breadcrumbs and their JSON-LD.
-- **Server Components by default.** The only client components are `NavLink`, `MobileMenu`, `ContactForm` and `error.tsx`. Keep it that way unless interactivity requires otherwise.
+- **Server Components by default.** Client components are limited to navigation controls, `ContactForm`, `PhotoSlideshow` and `error.tsx`; keep data loading and page templates on the server.
 - **Structured data** goes through `src/lib/structured-data.ts` and renders only via `<JsonLd>`. Trusted data only.
 - **Copy tone:** plain, warm, specific; no superlatives ("best builder in Wichita"), no keyword stuffing, no unverifiable claims.
 
@@ -436,7 +456,7 @@ There is no unit-test suite; the code is mostly declarative content. Verificatio
    It checks every page at 320/390/768/1024/1440px for HTTP 200, horizontal overflow, console errors and a single `<h1>`, then tests the mobile menu, skip link and contact form. Uses your locally installed Chrome; no browser download.
 3. **Lighthouse.** Use a production build. Build with `NEXT_PUBLIC_ALLOW_INDEXING=true` when measuring SEO, otherwise the deliberate `noindex` lowers the score:
    ```bash
-   npx lighthouse http://localhost:3000/ --preset=desktop --view
+   npx lighthouse http://localhost:3011/ --preset=desktop --view
    ```
 4. **Manual checks after content changes:** look for leftover yellow placeholders, read new copy for unverified claims, and check that new images have accurate alt text.
 5. **After launch:** Google's [Rich Results Test](https://search.google.com/test/rich-results) on the homepage and a project page; `curl -I` spot-checks of old-domain redirects; Search Console coverage and Core Web Vitals reports.
@@ -468,3 +488,19 @@ In rough priority order:
 - The logo source is a 560 × 560 PNG; logos and favicons are only as sharp as that source allows.
 - The stats bar, Specs & Finishes, Warranty, Finance and Agents pages are mostly placeholders until the owner provides content. They are structurally complete but not publishable as-is.
 - No script Content-Security-Policy (see [Deployment](#deployment)), and no rate limiting on the contact form yet.
+
+### Owner-supplied floor plan library
+
+The floor plan section now uses 42 owner-supplied outlines and furnished renderings across 16 plan/garage variants. Main-floor and basement drawings are grouped on the same detail page. All drawings display uncropped and link to full-size images. Assets and source filenames are documented in public/images/floor-plans/README.md; image references live in src/config/images.ts. Owner-supplied bedroom/bath counts, square footage, attached garage details and basement status are recorded for all 16 plans in src/data/floor-plans.ts. The Abraham 2-car and 3-car variants share the same specifications apart from garage size; all plans are owner-confirmed ranch style with 2 floors, while prices remain null. Basement status is stored separately exactly as supplied; the owner confirmed Adam and both Abraham variants have no basement. The owner confirmed Dixie has a 4-car attached garage, matching its drawings. Dallas Duplex is listed with two 2-car attached garages; its supplied totals are not divided per unit.
+
+### Available homes and property inventory
+
+The owner's public MLS report now supplies 62 active sale listings: 55 residential, 4 multi-family and 3 land, with 1,100 locally optimized listing photos. All rentals and illustrative sale listings were removed at the owner request. The index groups homes, multi-family properties and land separately; detail pages include descriptions, all extracted labeled MLS details, source links and the checked date. Active means for sale, without assuming move-in readiness. Package listings can overlap individual listings, so counts refer to MLS listings. This is a dated snapshot, not a live feed. Spreadsheet export, original reports, complete extraction data and refresh instructions are in listing-source/mls/README.md. Site records are in src/data/mls-inventory.json; photo references are registered through src/config/images.ts.
+
+### Slideshows and property inquiries
+
+`PhotoSlideshow` provides click-through photos on property, floor plan and portfolio cards and detail pages. It includes previous/next buttons, thumbnails on detail pages, keyboard arrows/Home/End, touch swipes, an enlarged dialog with Escape/close and focus restoration, and full-size image links. Photos do not advance automatically. Single-photo entries hide previous/next controls. Every supplied image remains accessible, including the cover image.
+
+Property inquiry links use `/contact?mls=<number>#form-heading`. The contact form resolves the MLS against current listing data inside a Suspense boundary, displays the selected address and MLS, and prefills the message. On submission, the server validates the MLS and independently adds the trusted address, MLS number and listing URL to `details`; the visitor can rewrite the question without losing that context. The webhook receives `mlsNumber` as a separate field, HubSpot receives the property context in `project_details` without needing new CRM fields, and email subjects include the MLS. Direct email links on property pages also include the MLS and address. General inquiries can leave the MLS blank. Unknown MLS numbers are rejected; failed deliveries retain the user's message and selection. Online delivery still depends on the provider configuration described above.
+
+`scripts/verify-gallery-inquiry.mjs` tests slideshows, card controls, mobile layouts, MLS prefill and delivery retries, and then runs the standard smoke test. For delivery verification only, start the app with `CONTACT_DELIVERY_PROVIDER=webhook` and `CONTACT_WEBHOOK_URL=http://127.0.0.1:3013`; the test starts a local receiver so no test messages go to the business or an external provider. These test settings should not be saved to the production environment.

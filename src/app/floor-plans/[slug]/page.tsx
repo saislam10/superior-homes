@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { buildMetadata } from "@/lib/seo";
@@ -9,8 +8,9 @@ import { PageHero } from "@/components/sections/PageHero";
 import { ConsultationCta } from "@/components/sections/ConsultationCta";
 import { Section } from "@/components/ui/Section";
 import { HomeCard, SpecRow } from "@/components/ui/Listing";
-import { DraftNotice } from "@/components/ui/Placeholder";
+import { DraftNotice, Placeholder } from "@/components/ui/Placeholder";
 import { ButtonLink, TextLink } from "@/components/ui/Button";
+import { PhotoSlideshow } from "@/components/ui/PhotoSlideshow";
 
 /** Keep at least one plan in src/data/floor-plans.ts (Cache Components requirement). */
 export function generateStaticParams() {
@@ -37,7 +37,7 @@ export default async function FloorPlanPage({ params }: PageProps<"/floor-plans/
 
   const path = `/floor-plans/${plan.slug}`;
   const homesOnPlan = availableHomes.filter((h) => h.floorPlanSlug === plan.slug && h.status !== "sold");
-  const [, ...gallery] = plan.gallery;
+  const gallery = plan.gallery;
 
   return (
     <>
@@ -49,10 +49,14 @@ export default async function FloorPlanPage({ params }: PageProps<"/floor-plans/
           { name: "Floor Plans", path: "/floor-plans" },
           { name: plan.name, path },
         ]}
-        image={plan.image}
       />
 
       <Section labelledBy="plan-overview-heading">
+        {plan.ownerReviewNote && (
+          <DraftNotice title="Drawing details to confirm" className="mb-12 max-w-3xl">
+            {plan.ownerReviewNote}
+          </DraftNotice>
+        )}
         {plan.isSample && (
           <DraftNotice title="Illustrative sample" className="mb-12 max-w-3xl">
             This page demonstrates the floor plan template. Specifications are examples, photos are licensed stock
@@ -87,8 +91,12 @@ export default async function FloorPlanPage({ params }: PageProps<"/floor-plans/
               <SpecRow beds={plan.beds} baths={plan.baths} sqft={plan.sqft} className="border-t-0 pt-0" />
               <dl className="divide-y divide-mist-200">
                 <div className="flex justify-between gap-4 py-3">
-                  <dt className="text-ink-subtle">Stories</dt>
-                  <dd className="text-ink">{plan.stories}</dd>
+                  <dt className="text-ink-subtle">Style</dt>
+                  <dd className="text-ink">{plan.style}</dd>
+                </div>
+                <div className="flex justify-between gap-4 py-3">
+                  <dt className="text-ink-subtle">Floors</dt>
+                  <dd className="text-ink">{plan.stories ?? <Placeholder>Not provided</Placeholder>}</dd>
                 </div>
                 {plan.garage && (
                   <div className="flex justify-between gap-4 py-3">
@@ -96,6 +104,10 @@ export default async function FloorPlanPage({ params }: PageProps<"/floor-plans/
                     <dd className="text-ink">{plan.garage}</dd>
                   </div>
                 )}
+                <div className="flex justify-between gap-4 py-3">
+                  <dt className="text-ink-subtle">Basement</dt>
+                  <dd className="text-ink">{plan.basement ?? <Placeholder>Not provided</Placeholder>}</dd>
+                </div>
                 <div className="flex justify-between gap-4 py-3">
                   <dt className="text-ink-subtle">Starting price</dt>
                   <dd className="text-ink">{formatPrice(plan.startingPrice)}</dd>
@@ -112,15 +124,9 @@ export default async function FloorPlanPage({ params }: PageProps<"/floor-plans/
       {gallery.length > 0 && (
         <Section tone="white" labelledBy="plan-gallery-heading">
           <h2 id="plan-gallery-heading" className="text-3xl text-ink">
-            Gallery
+            Plan drawings &amp; renderings
           </h2>
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2">
-            {gallery.map((img) => (
-              <li key={img.src} className="relative aspect-[4/3] overflow-hidden rounded-card bg-mist-200">
-                <Image src={img.src} alt={img.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
-              </li>
-            ))}
-          </ul>
+          <div className="mt-10"><PhotoSlideshow images={gallery} label={`${plan.name} drawings and renderings`} /></div>
         </Section>
       )}
 

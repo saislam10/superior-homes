@@ -1,5 +1,6 @@
 import { buildMetadata } from "@/lib/seo";
 import { siteConfig } from "@/config/site";
+import { remingtonGallery } from "@/config/images";
 import { HomeHero } from "@/components/sections/HomeHero";
 import { AvailableHomesRow, CommunitiesRow, FloorPlansRow, StatsBar } from "@/components/sections/HomeListings";
 import { ValueProposition } from "@/components/sections/ValueProposition";
@@ -10,6 +11,7 @@ import { ConsultationCta } from "@/components/sections/ConsultationCta";
 export const metadata = buildMetadata({
   description: siteConfig.description,
   path: "/",
+  image: remingtonGallery[0],
 });
 
 /**

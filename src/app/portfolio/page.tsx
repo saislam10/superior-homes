@@ -1,20 +1,21 @@
 import { buildMetadata } from "@/lib/seo";
-import { images } from "@/config/images";
+import { remingtonGallery } from "@/config/images";
 import { projects, realProjects } from "@/data/portfolio";
 import { PageHero } from "@/components/sections/PageHero";
 import { ConsultationCta } from "@/components/sections/ConsultationCta";
 import { Section } from "@/components/ui/Section";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import { DraftNotice } from "@/components/ui/Placeholder";
+import { previousSiteReview } from "@/data/previous-site-review";
 
 const path = "/portfolio";
 
 export const metadata = buildMetadata({
   title: "Custom Home Portfolio",
   description:
-    "Explore custom homes by Superior Homes in Wichita and surrounding communities. Project photography and details are being added.",
+    "Explore Superior Homes project galleries from Wichita and surrounding communities, including kitchens, living spaces, interior details and outdoor areas.",
   path,
-  image: images.modernExterior,
+  image: remingtonGallery[0],
 });
 
 export default function PortfolioPage() {
@@ -25,7 +26,7 @@ export default function PortfolioPage() {
       <PageHero
         eyebrow="Portfolio"
         title="Homes designed around the people who live in them."
-        intro="Every custom home tells the story of its owners — their priorities, their lot, and the choices they made along the way. Project write-ups and photography will be added here as homes are completed and documented."
+        intro="Explore Superior Homes project photography, including open living spaces, kitchens, interior details and outdoor areas."
         breadcrumbs={[{ name: "Portfolio", path }]}
       />
 
@@ -38,12 +39,13 @@ export default function PortfolioPage() {
           <DraftNotice title="Portfolio coming soon" className="mb-12 max-w-3xl">
             Real Superior Homes projects are being photographed and documented. Until then, the entries below are
             illustrative samples using licensed stock photography. They show how projects will be presented and are
-            not homes built by Superior Homes.
+            not homes built by Superior Homes. The former site has a substantial archive: {previousSiteReview.homeArchive.summary}{" "}
+            {previousSiteReview.homeArchive.reviewNote}
           </DraftNotice>
         )}
 
         <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
+          {(onlySamples ? projects : realProjects).map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>

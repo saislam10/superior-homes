@@ -6,6 +6,7 @@ import type { ContactFields } from "./schema";
  * Contact delivery integration point.
  *
  * Select a provider with CONTACT_DELIVERY_PROVIDER:
+ *   - "hubspot": Submits to a HubSpot form using its portal ID and form ID.
  *   - "webhook": POSTs JSON to CONTACT_WEBHOOK_URL (works with most CRMs,
  *                Zapier/Make, or your own endpoint). Optional
  *                CONTACT_WEBHOOK_SECRET is sent as a bearer token.
@@ -35,6 +36,8 @@ export async function deliverContact(fields: ContactFields): Promise<DeliveryRes
     switch (provider) {
       case "webhook":
         return await sendWebhook(fields);
+      case "hubspot":
+        return await sendHubSpot(fields);
       case "resend":
         return await sendResend(fields);
       default:
@@ -45,6 +48,49 @@ export async function deliverContact(fields: ContactFields): Promise<DeliveryRes
     console.error(`[contact] Delivery via "${provider}" failed.`);
     return { status: "failed" };
   }
+}
+
+async function sendHubSpot(fields: ContactFields): Promise<DeliveryResult> {
+  const portalId = process.env.HUBSPOT_PORTAL_ID?.trim();
+  const formId = process.env.HUBSPOT_FORM_ID?.trim();
+  if (!portalId || !formId) return { status: "not_configured" };
+
+  const nameParts = fields.name.trim().split(/\s+/);
+  const firstName = nameParts.shift() ?? "";
+  const lastName = nameParts.join(" ");
+  const hubSpotFields = [
+    { name: "firstname", value: firstName },
+    { name: "lastname", value: lastName },
+    { name: "email", value: fields.email },
+    { name: "phone", value: fields.phone },
+    { name: "intended_build_location", value: fields.location },
+    { name: "lot_status", value: fields.lot },
+    { name: "approximate_budget", value: fields.budget },
+    { name: "desired_timeline", value: fields.timeline },
+    { name: "project_details", value: fields.details },
+  ];
+
+  const res = await fetch(
+    `https://api.hsforms.com/submissions/v3/integration/submit/${encodeURIComponent(portalId)}/${encodeURIComponent(formId)}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fields: hubSpotFields,
+        context: {
+          pageUri: `${siteConfig.url}/contact`,
+          pageName: "Custom Home Consultation",
+        },
+      }),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    },
+  );
+
+  if (!res.ok) {
+    console.error(`[contact] HubSpot form responded with HTTP ${res.status}.`);
+    return { status: "failed" };
+  }
+  return { status: "delivered" };
 }
 
 async function sendWebhook(fields: ContactFields): Promise<DeliveryResult> {
@@ -80,6 +126,7 @@ async function sendResend(fields: ContactFields): Promise<DeliveryResult> {
   if (!apiKey || !to || !from) return { status: "not_configured" };
 
   const lines = [
+    ...(fields.mlsNumber ? [`MLS #: ${fields.mlsNumber}`] : []),
     `Name: ${fields.name}`,
     `Email: ${fields.email}`,
     `Phone: ${fields.phone || "—"}`,
@@ -102,7 +149,7 @@ async function sendResend(fields: ContactFields): Promise<DeliveryResult> {
       from,
       to: [to],
       reply_to: fields.email,
-      subject: `New custom home inquiry from ${fields.name}`,
+      subject: fields.mlsNumber ? `Property inquiry — MLS #${fields.mlsNumber} — ${fields.name}` : `New custom home inquiry from ${fields.name}`,
       // Plain text only — no user input is ever rendered as HTML.
       text: lines.join("\n"),
     }),

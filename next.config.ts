@@ -24,8 +24,11 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
-    // Stock imagery host. Remove once all images are local project photos.
-    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
+    // Stock imagery and current MLS listing photos.
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "zimg.paragon.ice.com" },
+    ],
   },
   async redirects() {
     return buildRedirects();

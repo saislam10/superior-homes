@@ -7,6 +7,7 @@ import { ConsultationCta } from "@/components/sections/ConsultationCta";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { DraftNotice } from "@/components/ui/Placeholder";
 import { TextLink } from "@/components/ui/Button";
+import { previousSiteReview } from "@/data/previous-site-review";
 
 const path = "/service-areas";
 
@@ -63,7 +64,9 @@ export default function ServiceAreasPage() {
             {proposedServiceAreas.length > 0 && (
               <DraftNotice title="Service area pending confirmation" className="mb-8">
                 Communities marked “proposed” are reasonable candidates for a Wichita-area builder but have not yet
-                been confirmed by the owner. They must be confirmed or removed before this page is published.
+                been confirmed by the owner. The former site lists homes or developments associated with{" "}
+                {previousSiteReview.serviceAreaSignals.join(", ")}; this is evidence of past activity, not confirmation
+                of current service coverage. Confirm or remove proposed locations before publication.
               </DraftNotice>
             )}
             <div className="space-y-8">

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { buildMetadata } from "@/lib/seo";
 import { getProject, projects } from "@/data/portfolio";
@@ -9,6 +8,7 @@ import { Section } from "@/components/ui/Section";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { DraftNotice } from "@/components/ui/Placeholder";
 import { TextLink } from "@/components/ui/Button";
+import { PhotoSlideshow } from "@/components/ui/PhotoSlideshow";
 
 /**
  * Project detail template.
@@ -42,7 +42,7 @@ export default async function ProjectPage({ params }: PageProps<"/portfolio/[slu
 
   const path = `/portfolio/${project.slug}`;
   const schema = projectSchema(project, path);
-  const [, ...gallery] = project.gallery;
+  const gallery = project.gallery;
 
   return (
     <>
@@ -111,26 +111,7 @@ export default async function ProjectPage({ params }: PageProps<"/portfolio/[slu
           <h2 id="gallery-heading" className="text-3xl text-ink">
             Gallery
           </h2>
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2">
-            {gallery.map((img, i) => (
-              <li
-                key={img.src}
-                className={
-                  i === 0
-                    ? "relative aspect-[16/9] overflow-hidden rounded-card bg-mist-200 sm:col-span-2"
-                    : "relative aspect-[4/3] overflow-hidden rounded-card bg-mist-200"
-                }
-              >
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  sizes={i === 0 ? "100vw" : "(min-width: 640px) 50vw, 100vw"}
-                  className="object-cover"
-                />
-              </li>
-            ))}
-          </ul>
+          <div className="mt-10"><PhotoSlideshow images={gallery} label={`${project.title} gallery`} /></div>
           <TextLink href="/portfolio" className="mt-12">
             Back to the portfolio
           </TextLink>

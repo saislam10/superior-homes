@@ -1,6 +1,6 @@
 import { buildMetadata } from "@/lib/seo";
 import { images } from "@/config/images";
-import { availableHomes, realAvailableHomes, statusLabels, type HomeStatus } from "@/data/available-homes";
+import { availableHomes, realAvailableHomes, getStatusLabel, type HomeStatus, type ListingType } from "@/data/available-homes";
 import { getCommunity } from "@/data/communities";
 import { getFloorPlan } from "@/data/floor-plans";
 import { PageHero } from "@/components/sections/PageHero";
@@ -12,28 +12,29 @@ import { DraftNotice } from "@/components/ui/Placeholder";
 const path = "/available-homes";
 
 export const metadata = buildMetadata({
-  title: "Available Homes",
+  title: "Homes & Properties for Sale",
   description:
-    "Move-in-ready and under-construction homes from Superior Homes in the Wichita area. See status, specs and floor plans, and ask about finishing choices.",
+    "Explore Wichita-area homes, multi-family properties and land for sale. View photos, prices, specifications and MLS details.",
   path,
-  image: images.porchHome,
+  image: realAvailableHomes[0]?.image ?? images.porchHome,
 });
 
 const groups: HomeStatus[] = ["available", "under-construction", "pending"];
+const listingTypes: ListingType[] = ["sale"];
 
 export default function AvailableHomesPage() {
   return (
     <>
       <PageHero
-        eyebrow="Available homes"
-        title="Homes available now and coming soon."
-        intro="Move-in-ready homes and homes still under construction. If a home is early enough in the build, you may still be able to choose some of the finishes."
+        eyebrow="Homes & properties"
+        title="Find a property that fits your plans."
+        intro="Browse homes, multi-family properties and land for sale. Explore photos, prices and details from the public MLS listings."
         breadcrumbs={[{ name: "Available Homes", path }]}
       />
 
       <Section labelledBy="homes-list-heading">
         <h2 id="homes-list-heading" className="sr-only">
-          Homes by status
+          Homes and properties by status
         </h2>
         {realAvailableHomes.length === 0 && (
           <DraftNotice title="Inventory coming soon" className="mb-12 max-w-3xl">
@@ -42,28 +43,44 @@ export default function AvailableHomesPage() {
           </DraftNotice>
         )}
 
+        <nav aria-label="Browse property types" className="mb-12 flex flex-wrap gap-3">
+          {([['Residential', 'Homes'], ['Multi-Family', 'Multi-family'], ['Land', 'Land']] as const).map(([category, label]) => {
+            const count = realAvailableHomes.filter(home => home.listingType === "sale" && home.propertyClass === category).length;
+            return count > 0 && <a key={category} href={`#sale-available-${category.toLowerCase()}`} className="rounded-button border border-mist-300 px-4 py-2 text-sm text-brand-800 hover:bg-mist-100">{label} ({count})</a>;
+          })}
+        </nav>
+
         <div className="space-y-16">
-          {groups.map((status) => {
-            const homes = availableHomes.filter((h) => h.status === status);
-            if (homes.length === 0) return null;
-            return (
-              <div key={status}>
-                <h3 className="flex items-baseline gap-3 text-2xl text-ink">
-                  {statusLabels[status]}
-                  <span className="font-sans text-sm text-ink-subtle">({homes.length})</span>
-                </h3>
-                <div className="mt-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                  {homes.map((home) => (
-                    <HomeCard
-                      key={home.slug}
-                      home={home}
-                      communityName={home.communitySlug ? getCommunity(home.communitySlug)?.name : undefined}
-                      planName={home.floorPlanSlug ? getFloorPlan(home.floorPlanSlug)?.name : undefined}
-                    />
-                  ))}
-                </div>
+          {listingTypes.map((listingType) => {
+            const typeHomes = availableHomes.filter((h) => h.listingType === listingType && h.status !== "sold");
+            if (typeHomes.length === 0) return null;
+            return <section key={listingType} aria-labelledby={`${listingType}-heading`}>
+              <h3 id={`${listingType}-heading`} className="text-3xl text-ink">{listingType === "rent" ? "For rent" : "For sale"}</h3>
+              <div className="mt-8 space-y-12">
+                {groups.map((status) => {
+                  const homes = typeHomes.filter((h) => h.status === status);
+                  if (homes.length === 0) return null;
+                  return <div key={status}>
+                    <h4 className="flex items-baseline gap-3 text-2xl text-ink">
+                      {status === "available" ? "Active listings" : getStatusLabel(status, listingType)}
+                      <span className="font-sans text-sm text-ink-subtle">({homes.length})</span>
+                    </h4>
+                    <div className="mt-6 space-y-12">
+                      {(["Residential", "Multi-Family", "Land"] as const).map((category) => {
+                        const properties = homes.filter(home => (home.propertyClass ?? "Residential") === category);
+                        if (!properties.length) return null;
+                        return <section key={category} id={`${listingType}-${status}-${category.toLowerCase()}`} className="scroll-mt-28" aria-label={category === "Residential" ? "Homes" : category === "Multi-Family" ? "Multi-family properties" : "Land"}>
+                          <h5 className="mb-6 text-xl text-ink">{category === "Residential" ? "Homes" : category === "Multi-Family" ? "Multi-family properties" : "Land"} <span className="font-sans text-sm text-ink-subtle">({properties.length})</span></h5>
+                          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                            {properties.map((home) => <HomeCard key={home.slug} home={home} communityName={home.communitySlug ? getCommunity(home.communitySlug)?.name : undefined} planName={home.floorPlanSlug ? getFloorPlan(home.floorPlanSlug)?.name : undefined} />)}
+                          </div>
+                        </section>;
+                      })}
+                    </div>
+                  </div>;
+                })}
               </div>
-            );
+            </section>;
           })}
         </div>
       </Section>

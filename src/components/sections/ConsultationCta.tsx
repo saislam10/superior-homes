@@ -8,11 +8,15 @@ import { Container } from "@/components/ui/Container";
 type ConsultationCtaProps = {
   title?: string;
   body?: string;
+  contactHref?: string;
+  inquirySubject?: string;
 };
 
 export function ConsultationCta({
   title = "Let’s talk about the home you have in mind.",
   body = "Share a few details about your plans — where you’d like to build, roughly what you want to spend, and when. We’ll follow up to talk it through. There’s no obligation.",
+  contactHref = "/contact",
+  inquirySubject,
 }: ConsultationCtaProps) {
   const { phone, email } = siteConfig.contact;
 
@@ -26,7 +30,7 @@ export function ConsultationCta({
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/80">{body}</p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <ButtonLink href="/contact" variant="light" withArrow>
+            <ButtonLink href={contactHref} variant="light" withArrow>
               Start a Conversation
             </ButtonLink>
             {phone && (
@@ -36,7 +40,7 @@ export function ConsultationCta({
               </a>
             )}
             {email && (
-              <a href={`mailto:${email}`} className={buttonClasses("outline-light")}>
+              <a href={`mailto:${email}${inquirySubject ? `?subject=${encodeURIComponent(inquirySubject)}` : ""}`} className={buttonClasses("outline-light")}>
                 <Mail aria-hidden="true" className="size-4" />
                 Email us
               </a>

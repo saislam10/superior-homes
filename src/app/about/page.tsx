@@ -3,6 +3,7 @@ import { buildMetadata } from "@/lib/seo";
 import { images, type SiteImage } from "@/config/images";
 import { siteConfig } from "@/config/site";
 import { approachPoints } from "@/data/approach";
+import { previousSiteReview } from "@/data/previous-site-review";
 import { PageHero } from "@/components/sections/PageHero";
 import { ConsultationCta } from "@/components/sections/ConsultationCta";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -47,7 +48,9 @@ export default function AboutPage() {
       <Section labelledBy="story-heading">
         <DraftNotice title="Owner input needed" className="mb-12 max-w-3xl">
           This page contains placeholders for the company story, team and experience. Each bracketed item must be
-          replaced with confirmed information from the owner before launch.
+          replaced with confirmed information from the owner before launch. The previous site emphasized{" "}
+          {previousSiteReview.featureClaims[3].toLowerCase()}; confirm whether those remain part of the company’s
+          positioning. Avoid promises of lower utility bills unless they can be substantiated.
         </DraftNotice>
 
         <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-20">

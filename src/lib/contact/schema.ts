@@ -29,6 +29,7 @@ export const lotOptions = [
 ] as const;
 
 export type ContactFields = {
+  mlsNumber: string;
   name: string;
   email: string;
   phone: string;
@@ -60,6 +61,9 @@ export function validateContact(input: ContactFields): FieldErrors {
   const email = input.email.trim();
   const phone = input.phone.trim();
   const details = input.details.trim();
+
+  if (input.mlsNumber && !/^\d{6,10}$/.test(input.mlsNumber.trim()))
+    errors.mlsNumber = "Please enter a valid MLS number (6–10 digits).";
 
   if (!name) errors.name = "Please enter your name.";
   else if (name.length > limits.name) errors.name = `Please keep your name under ${limits.name} characters.`;
@@ -99,6 +103,7 @@ export function readContactFields(formData: FormData): ContactFields {
     return typeof value === "string" ? value : "";
   };
   return {
+    mlsNumber: get("mlsNumber").trim(),
     name: get("name"),
     email: get("email"),
     phone: get("phone"),

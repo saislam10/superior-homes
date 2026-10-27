@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Slide Show</title>
+    <link href="/ParagonLS/scripts/publink/JScript/exposure/exposure.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/ParagonLS/scripts/publink/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="/ParagonLS/scripts/publink/JScript/exposure/jquery.exposure.js"></script>
+    <script type="text/javascript" src="/ParagonLS/scripts/publink/JScript/focus/focus.slideshow.init.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        body, td, th {
+            font-family: Tahoma;
+            font-size: 11px;
+        }
+
+        .exposureWrapper {
+            height: 480px;
+            width: 640px;
+        }
+
+            .exposureWrapper img {
+                width: auto !important;
+                height: auto !important;
+                max-height: 100%;
+                max-width: 100%;
+            }
+
+        ul.exposureThumbs li img {
+            max-width: 100%;
+            max-height: 100%;
+            height: inherit !important;
+        }
+
+        .selected{
+            border: 2px solid red;
+        }
+
+    </style>
+</head>
+
+<body role="dialog" aria-label="Photo Slide Show" aria-labelledby="cboxTitle" aria-describedby="cboxTitle">
+    <div id="galleryView" style="display: none;">
+        <div id="leftArrow" class="hideWhenPrinted" aria-label="Previous Photo" alt="Previous Photo" role="button"><ins></ins></div><div id="rightArrow" class="hideWhenPrinted" aria-label="Next Photo" alt="Next Photo" role="button"><ins></ins></div><a id="upArrow" class="hideWhenPrinted" aria-label="Previous Photo" alt="Previous Photo" role="button" href="javascript:void(0);"><ins>&nbsp;</ins></a><ul class="exposure" id="photos"><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/0/640/480/34fa9187dbbc3fc4d56c8b3b9d463da5/1/36a29728afe3a52f040c26b779484fb2/675482-e8fff4ed-bdb4-46d1-bf4b-9eabdf6c736a.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/0/120/90/2dc24004ff15123b83e84dc6797e52b4/1/36a29728afe3a52f040c26b779484fb2/675482-e8fff4ed-bdb4-46d1-bf4b-9eabdf6c736a.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/1/640/480/ae48b9422a4a66e37b62fb811249be89/1/36a29728afe3a52f040c26b779484fb2/675482-aa93fed2-887c-4104-ab2a-870f62c64a64.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/1/120/90/9658199653573e59233e6a96f6e93a72/1/36a29728afe3a52f040c26b779484fb2/675482-aa93fed2-887c-4104-ab2a-870f62c64a64.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/2/640/480/625e130ba1b446d492277dd42b9acef5/1/36a29728afe3a52f040c26b779484fb2/675482-032fd72a-90b4-4c29-aa39-882608ae5327.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/2/120/90/501857e752855c1da8f53c52eb1dbb81/1/36a29728afe3a52f040c26b779484fb2/675482-032fd72a-90b4-4c29-aa39-882608ae5327.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/3/640/480/9c9d7c2704b23854a6da1c4983b0ba84/1/36a29728afe3a52f040c26b779484fb2/675482-0cfbf4b9-ba08-44ef-a804-b8c06fa4a8c2.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/3/120/90/b109891cfd5a3350f4b67160f7190617/1/36a29728afe3a52f040c26b779484fb2/675482-0cfbf4b9-ba08-44ef-a804-b8c06fa4a8c2.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/4/640/480/afc0f66f7edd62681a758d1a486cbe2d/1/36a29728afe3a52f040c26b779484fb2/675482-12d0d534-8311-4988-9d0c-aae7cd1d8cc3.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/4/120/90/532c8d6249d7f47d271ed549a9fdef3a/1/36a29728afe3a52f040c26b779484fb2/675482-12d0d534-8311-4988-9d0c-aae7cd1d8cc3.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/5/640/480/978cebe502a53fe943c890b590984eeb/1/36a29728afe3a52f040c26b779484fb2/675482-6ed45899-48eb-4efc-affa-2e07a4067540.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/5/120/90/858a74c521029c6937a0c342ae9b2c44/1/36a29728afe3a52f040c26b779484fb2/675482-6ed45899-48eb-4efc-affa-2e07a4067540.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/6/640/480/4fadc21c3761bae766fdb054751adff1/1/36a29728afe3a52f040c26b779484fb2/675482-fd46cd13-1519-4add-992e-3525b177d5cd.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/6/120/90/be754f50ef01c65cf535cab1052bb903/1/36a29728afe3a52f040c26b779484fb2/675482-fd46cd13-1519-4add-992e-3525b177d5cd.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/7/640/480/0e3e17ab7be6dcda206f2ae188657b23/1/36a29728afe3a52f040c26b779484fb2/675482-37d686f3-d202-4555-a7c5-079e9a698c4b.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/7/120/90/10a03267db9cf32c4141c4347b7bd19f/1/36a29728afe3a52f040c26b779484fb2/675482-37d686f3-d202-4555-a7c5-079e9a698c4b.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/8/640/480/4e722981ffbb3d3d8b5381612f2775d4/1/36a29728afe3a52f040c26b779484fb2/675482-b1ec4814-f4ce-48f6-af15-50022c18d881.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/8/120/90/c6e5c41efbb73a902b98cecdd7cdef06/1/36a29728afe3a52f040c26b779484fb2/675482-b1ec4814-f4ce-48f6-af15-50022c18d881.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/9/640/480/f753237fd8f300dcce38a8c540ec2b72/1/36a29728afe3a52f040c26b779484fb2/675482-0f693f13-f3e0-404a-a67d-025df8a25ad0.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/9/120/90/259a8f0eba064e1bbf5f15638f15b414/1/36a29728afe3a52f040c26b779484fb2/675482-0f693f13-f3e0-404a-a67d-025df8a25ad0.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/10/640/480/92723519fdff4bac5edbebf5cfa4a937/1/36a29728afe3a52f040c26b779484fb2/675482-f09c78c3-f88c-4bb7-a339-58ec950c6269.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/10/120/90/6a686f836092183645e82f16de3359f9/1/36a29728afe3a52f040c26b779484fb2/675482-f09c78c3-f88c-4bb7-a339-58ec950c6269.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/11/640/480/137998283416f3840462dbbe2202e40f/1/36a29728afe3a52f040c26b779484fb2/675482-06dbc366-b71e-44e5-b8d5-5da402d636e5.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/11/120/90/3fe8c2dfb98cb1e83db09c2934da48dc/1/36a29728afe3a52f040c26b779484fb2/675482-06dbc366-b71e-44e5-b8d5-5da402d636e5.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/12/640/480/52754be528d8eca6f2ecc651beb3b48f/1/36a29728afe3a52f040c26b779484fb2/675482-3ddd3abe-6d70-4e8b-b203-1ed016e21376.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/12/120/90/f53427eef24dd5cca26373d4b860c4e3/1/36a29728afe3a52f040c26b779484fb2/675482-3ddd3abe-6d70-4e8b-b203-1ed016e21376.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/13/640/480/d630ccf7dcadf8e8d5ad7b3db920249c/1/36a29728afe3a52f040c26b779484fb2/675482-e1448d8c-9904-4569-8a6b-705648e23aef.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/13/120/90/b4ae435b888003cc4807ea12d0982fa0/1/36a29728afe3a52f040c26b779484fb2/675482-e1448d8c-9904-4569-8a6b-705648e23aef.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/14/640/480/b56d5117a5151eee5233db2f8d2122ff/1/36a29728afe3a52f040c26b779484fb2/675482-ad2dcd3c-e5b5-4076-affa-6d81b591002d.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/14/120/90/ea22f4d8c3c1a66be08f000f75ad7b13/1/36a29728afe3a52f040c26b779484fb2/675482-ad2dcd3c-e5b5-4076-affa-6d81b591002d.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/15/640/480/744ba7fa69800a06bd59356bbae42230/1/36a29728afe3a52f040c26b779484fb2/675482-b8f6e5e8-e018-45b7-908b-cc8f12e7dd4b.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/15/120/90/a51af9f0663816685e503893ff66141c/1/36a29728afe3a52f040c26b779484fb2/675482-b8f6e5e8-e018-45b7-908b-cc8f12e7dd4b.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/16/640/480/d84e4732d750f49f1624f45cb3ae77ad/1/36a29728afe3a52f040c26b779484fb2/675482-eeedb9c1-7571-44ea-bc6b-f89271f885b2.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/16/120/90/6ae45ea578a371033db6fcb47b80ed8d/1/36a29728afe3a52f040c26b779484fb2/675482-eeedb9c1-7571-44ea-bc6b-f89271f885b2.JPG" /></a></li><li><a href="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/17/640/480/3af2a93001b5c408e3413c6bd23ef896/1/36a29728afe3a52f040c26b779484fb2/675482-12c7b15b-d945-4b92-878a-bb618fc17bf2.JPG"><img src="https://zimg.paragon.ice.com/ParagonImages/Property/PM/SCKMLS/675482/17/120/90/fb9ed36a48e0e7dcc4fc025fe6926e83/1/36a29728afe3a52f040c26b779484fb2/675482-12c7b15b-d945-4b92-878a-bb618fc17bf2.JPG" /></a></li></ul><a id="downArrow" class="hideWhenPrinted" aria-label="Previous Photo" alt="Next Photo" role="button" href="javascript:void(0);"><ins>&nbsp;</ins></a><div class="clear"></div>
+    </div>
+    <div id="exposure"></div>
+    <div class="clear"></div>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a51434cdeb3555bb',t:'MTc5MzEzMDM4MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+<script type="text/javascript" language="javascript">
+    //<![CDATA[
+
+	var listingId = 675482;
+	var startIndex = 1;
+    parent.$('#Close').click(function() {
+        parent.$.fn.colorbox.close();
+    });
+
+    $(document).ready(function () {
+        $.focusFx.slideShowInit();
+    });
+    //]]>
+</script>
+</html>

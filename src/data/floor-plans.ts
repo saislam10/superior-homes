@@ -1,116 +1,241 @@
-import { images, type SiteImage } from "@/config/images";
+import { floorPlanImages, type SiteImage } from "@/config/images";
 
-/**
- * Floor plans — presented as starting points homeowners can customize.
- *
- * Each plan gets a page at /floor-plans/[slug]. `isSample: true` entries are
- * ILLUSTRATIVE: example specs and stock photos, badged on the page,
- * `noindex`, and excluded from the sitemap. Replace them with the company's
- * real plans (names, specs, drawings, photos) supplied by the owner.
- *
- * Never invent prices: leave `startingPrice` null unless the owner provides
- * a current figure (and keep it current).
- *
- * Keep at least one entry (Cache Components requires generateStaticParams
- * to return at least one param).
- */
-
+/** Owner-supplied plans. Unknown specifications remain null until supplied separately. */
 export type FloorPlan = {
-  slug: string;
-  name: string;
-  beds: number;
-  baths: number;
-  sqft: number;
-  garage?: string;
-  stories: 1 | 1.5 | 2;
-  summary: string;
-  description: string[];
-  /** Ideas for how this plan is commonly customized. */
-  customizationIdeas: string[];
-  image: SiteImage;
-  gallery: SiteImage[];
-  /** Base price in USD, owner-confirmed only. */
-  startingPrice: number | null;
-  isSample: boolean;
+  style: "Ranch";
+  slug: string; name: string; beds: number | null; baths: number | null; sqft: number | null;
+  garage?: string; basement: "No basement" | "Finished basement" | null; ownerReviewNote?: string; stories: 1 | 1.5 | 2 | null; summary: string; description: string[];
+  customizationIdeas: string[]; image: SiteImage; gallery: SiteImage[];
+  startingPrice: number | null; isSample: boolean;
 };
-
-const sampleNote =
-  "This is an illustrative sample plan. The specifications are examples and the photos are licensed stock images, not a Superior Homes build.";
 
 export const floorPlans: FloorPlan[] = [
   {
-    slug: "sample-ranch-plan",
-    name: "Sample Ranch Plan",
-    beds: 3,
-    baths: 2,
-    sqft: 1600,
-    garage: "2-car",
-    stories: 1,
-    summary: "A single-level layout with an open kitchen and living area and a private primary suite.",
-    description: [
-      sampleNote,
-      "A real plan description would explain the layout, how the rooms connect, and who the plan tends to suit — then point out which parts are easiest to adapt.",
-    ],
-    customizationIdeas: [
-      "Add a basement or storm shelter",
-      "Extend the garage or add a workshop bay",
-      "Enlarge the kitchen island or add a walk-in pantry",
-    ],
-    image: images.porchHome,
-    gallery: [images.porchHome, images.whiteKitchen, images.sunlitLiving],
-    startingPrice: null,
-    isSample: true,
+    style: "Ranch",
+    slug: "abraham-2-car",
+    name: "The Abraham — 2-Car",
+    garage: "2-car attached",
+    beds: 4, baths: 2, sqft: 1599, stories: 2,
+    basement: "No basement",
+    summary: "4 bedrooms, 2 bathrooms and 1,599 sq ft, with a 2-car attached garage and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["abraham-2-car-layout-rendering"],
+    gallery: [floorPlanImages["abraham-2-car-layout-rendering"], floorPlanImages["abraham-2-car-layout-outline"]],
+    startingPrice: null, isSample: false,
   },
   {
-    slug: "sample-family-two-story",
-    name: "Sample Family Two-Story",
-    beds: 4,
-    baths: 2.5,
-    sqft: 2400,
-    garage: "3-car",
-    stories: 2,
-    summary: "Shared living spaces on the main level and bedrooms upstairs, with a flexible bonus room.",
-    description: [
-      sampleNote,
-      "A real plan description would cover the main-level flow, the upstairs arrangement and the options for the bonus space.",
-    ],
-    customizationIdeas: [
-      "Convert the bonus room to a fifth bedroom or office",
-      "Add a main-level guest suite",
-      "Upgrade to a covered patio or screened porch",
-    ],
-    image: images.modernExterior,
-    gallery: [images.modernExterior, images.islandKitchen, images.primaryBedroom],
-    startingPrice: null,
-    isSample: true,
+    style: "Ranch",
+    slug: "abraham-3-car",
+    name: "The Abraham — 3-Car",
+    garage: "3-car attached",
+    beds: 4, baths: 2, sqft: 1599, stories: 2, basement: "No basement",
+    summary: "4 bedrooms, 2 bathrooms and 1,599 sq ft, with a 3-car attached garage and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["abraham-3-car-layout-rendering"],
+    gallery: [floorPlanImages["abraham-3-car-layout-rendering"], floorPlanImages["abraham-3-car-layout-outline"]],
+    startingPrice: null, isSample: false,
   },
   {
-    slug: "sample-modern-open-plan",
-    name: "Sample Modern Open Plan",
-    beds: 3,
-    baths: 2.5,
-    sqft: 2100,
-    garage: "2-car",
-    stories: 1.5,
-    summary: "A contemporary plan built around a great room with tall windows and a loft overlook.",
-    description: [
-      sampleNote,
-      "A real plan description would explain the design intent, natural light and how the loft can be used.",
-    ],
-    customizationIdeas: [
-      "Swap the loft for an enclosed office",
-      "Change exterior materials and roofline",
-      "Add a mudroom drop zone off the garage",
-    ],
-    image: images.timberExterior,
-    gallery: [images.timberExterior, images.openLiving, images.sunlitLiving],
-    startingPrice: null,
-    isSample: true,
+    style: "Ranch",
+    slug: "adam-3-car",
+    name: "The Adam — 3-Car",
+    garage: "3-car attached",
+    beds: 3, baths: 2, sqft: 1638, stories: 2,
+    basement: "No basement",
+    summary: "3 bedrooms, 2 bathrooms and 1,638 sq ft, with a 3-car attached garage and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["adam-3-car-layout-rendering"],
+    gallery: [floorPlanImages["adam-3-car-layout-rendering"], floorPlanImages["adam-3-car-layout-outline"]],
+    startingPrice: null, isSample: false,
   },
+  {
+    style: "Ranch",
+    slug: "adams-2-car",
+    name: "The Adams — 2-Car",
+    garage: "2-car attached",
+    beds: 3, baths: 2, sqft: 1638, stories: 2,
+    basement: "No basement",
+    summary: "3 bedrooms, 2 bathrooms and 1,638 sq ft, with a 2-car attached garage and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["adams-2-car-layout-rendering"],
+    gallery: [floorPlanImages["adams-2-car-layout-rendering"], floorPlanImages["adams-2-car-layout-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "bella-3-car",
+    name: "The Bella — 3-Car",
+    garage: "3-car attached",
+    beds: 3, baths: 2, sqft: 1884, stories: 2,
+    basement: "No basement",
+    summary: "3 bedrooms, 2 bathrooms and 1,884 sq ft, with a 3-car attached garage and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["bella-3-car-layout-rendering"],
+    gallery: [floorPlanImages["bella-3-car-layout-rendering"], floorPlanImages["bella-3-car-layout-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "ceasar-3-car",
+    name: "The Ceasar — 3-Car",
+    garage: "3-car attached",
+    beds: 4, baths: 2, sqft: 2102, stories: 2,
+    basement: "No basement",
+    summary: "4 bedrooms, 2 bathrooms and 2,102 sq ft, with a 3-car attached garage and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["ceasar-3-car-layout-rendering"],
+    gallery: [floorPlanImages["ceasar-3-car-layout-rendering"], floorPlanImages["ceasar-3-car-layout-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "dallas-duplex-2-car",
+    name: "The Dallas Duplex",
+    garage: "Two 2-car attached garages",
+    beds: 6, baths: 4, sqft: 2442, stories: 2,
+    basement: "No basement",
+    summary: "6 bedrooms, 4 bathrooms and 2,442 sq ft, with two 2-car attached garages and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["dallas-duplex-2-car-layout-rendering"],
+    gallery: [floorPlanImages["dallas-duplex-2-car-layout-rendering"], floorPlanImages["dallas-duplex-2-car-layout-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "dixie-4-car",
+    name: "The Dixie — 4-Car",
+    garage: "4-car attached",
+    beds: 4, baths: 2, sqft: 2102, stories: 2,
+    basement: "Finished basement",
+    summary: "4 bedrooms, 2 bathrooms and 2,102 sq ft, with a 4-car attached garage and a finished basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["dixie-4-car-main-floor-rendering"],
+    gallery: [floorPlanImages["dixie-4-car-main-floor-rendering"], floorPlanImages["dixie-4-car-main-floor-outline"], floorPlanImages["dixie-4-car-basement-rendering"], floorPlanImages["dixie-4-car-basement-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "gilbert-3-car",
+    name: "The Gilbert — 3-Car",
+    garage: "3-car attached",
+    beds: 5, baths: 3, sqft: 2790, stories: 2,
+    basement: "Finished basement",
+    summary: "5 bedrooms, 3 bathrooms and 2,790 sq ft, with a 3-car attached garage and a finished basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["gilbert-3-car-main-floor-rendering"],
+    gallery: [floorPlanImages["gilbert-3-car-main-floor-rendering"], floorPlanImages["gilbert-3-car-main-floor-outline"], floorPlanImages["gilbert-3-car-basement-rendering"], floorPlanImages["gilbert-3-car-basement-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "joseph-3-car",
+    name: "The Joseph — 3-Car",
+    garage: "3-car attached",
+    beds: 4, baths: 2, sqft: 2102, stories: 2,
+    basement: "No basement",
+    summary: "4 bedrooms, 2 bathrooms and 2,102 sq ft, with a 3-car attached garage and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["joseph-3-car-layout-rendering"],
+    gallery: [floorPlanImages["joseph-3-car-layout-rendering"], floorPlanImages["joseph-3-car-layout-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "meadow-grove-3-car",
+    name: "The Meadow Grove — 3-Car",
+    garage: "3-car attached",
+    beds: 4, baths: 2, sqft: 1973, stories: 2,
+    basement: "No basement",
+    summary: "4 bedrooms, 2 bathrooms and 1,973 sq ft, with a 3-car attached garage and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["meadow-grove-3-car-layout-rendering"],
+    gallery: [floorPlanImages["meadow-grove-3-car-layout-rendering"], floorPlanImages["meadow-grove-3-car-layout-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "paddock-3-car",
+    name: "The Paddock — 3-Car",
+    garage: "3-car attached",
+    beds: 5, baths: 3, sqft: 2862, stories: 2,
+    basement: "Finished basement",
+    summary: "5 bedrooms, 3 bathrooms and 2,862 sq ft, with a 3-car attached garage and a finished basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["paddock-3-car-main-floor-rendering"],
+    gallery: [floorPlanImages["paddock-3-car-main-floor-rendering"], floorPlanImages["paddock-3-car-main-floor-outline"], floorPlanImages["paddock-3-car-basement-rendering"], floorPlanImages["paddock-3-car-basement-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "sham-2-car",
+    name: "The Sham — 2-Car",
+    garage: "2-car attached",
+    beds: 4, baths: 3, sqft: 2299, stories: 2,
+    basement: "Finished basement",
+    summary: "4 bedrooms, 3 bathrooms and 2,299 sq ft, with a 2-car attached garage and a finished basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["sham-2-car-basement-rendering"],
+    gallery: [floorPlanImages["sham-2-car-basement-rendering"], floorPlanImages["sham-2-car-basement-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "sham-3-car",
+    name: "The Sham — 3-Car",
+    garage: "3-car attached",
+    beds: 4, baths: 3, sqft: 2299, stories: 2,
+    basement: "Finished basement",
+    summary: "4 bedrooms, 3 bathrooms and 2,299 sq ft, with a 3-car attached garage and a finished basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["sham-3-car-main-floor-rendering"],
+    gallery: [floorPlanImages["sham-3-car-main-floor-rendering"], floorPlanImages["sham-3-car-main-floor-outline"], floorPlanImages["sham-3-car-basement-rendering"], floorPlanImages["sham-3-car-basement-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "ty-3-car",
+    name: "The Ty — 3-Car",
+    garage: "3-car attached",
+    beds: 3, baths: 2, sqft: 1904, stories: 2,
+    basement: "No basement",
+    summary: "3 bedrooms, 2 bathrooms and 1,904 sq ft, with a 3-car attached garage and no basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["ty-3-car-layout-rendering"],
+    gallery: [floorPlanImages["ty-3-car-layout-rendering"], floorPlanImages["ty-3-car-layout-outline"]],
+    startingPrice: null, isSample: false,
+  },
+  {
+    style: "Ranch",
+    slug: "woodside-3-car",
+    name: "The Woodside — 3-Car",
+    garage: "3-car attached",
+    beds: 5, baths: 3, sqft: 2454, stories: 2,
+    basement: "Finished basement",
+    summary: "5 bedrooms, 3 bathrooms and 2,454 sq ft, with a 3-car attached garage and a finished basement.",
+    description: ["Compare the furnished rendering with the outline to explore the layout. Select any drawing below to open the full-size image."],
+    customizationIdeas: ["Discuss layout and finish preferences with Superior Homes"],
+    image: floorPlanImages["woodside-3-car-main-floor-rendering"],
+    gallery: [floorPlanImages["woodside-3-car-main-floor-rendering"], floorPlanImages["woodside-3-car-main-floor-outline"], floorPlanImages["woodside-3-car-basement-rendering"], floorPlanImages["woodside-3-car-basement-outline"]],
+    startingPrice: null, isSample: false,
+  }
 ];
 
-export const realFloorPlans = floorPlans.filter((p) => !p.isSample);
-
+export const realFloorPlans = floorPlans.filter(p => !p.isSample);
 export function getFloorPlan(slug: string): FloorPlan | undefined {
-  return floorPlans.find((p) => p.slug === slug);
+  return floorPlans.find(p => p.slug === slug);
 }

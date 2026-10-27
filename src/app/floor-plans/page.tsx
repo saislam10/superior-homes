@@ -1,5 +1,4 @@
 import { buildMetadata } from "@/lib/seo";
-import { images } from "@/config/images";
 import { floorPlans, realFloorPlans } from "@/data/floor-plans";
 import { PageHero } from "@/components/sections/PageHero";
 import { ConsultationCta } from "@/components/sections/ConsultationCta";
@@ -15,7 +14,7 @@ export const metadata = buildMetadata({
   description:
     "Browse Superior Homes floor plans for Wichita-area homes — starting points you can customize with your own layout changes, finishes and features.",
   path,
-  image: images.modernExterior,
+  image: floorPlans[0].image,
 });
 
 export default function FloorPlansPage() {

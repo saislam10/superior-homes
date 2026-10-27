@@ -74,16 +74,16 @@ export function FloorPlansRow() {
 
 export function AvailableHomesRow() {
   const homes = availableHomes.filter((h) => h.status !== "sold").slice(0, 3);
-  const readyNow = realAvailableHomes.filter((h) => h.status === "available").length;
+  const forSale = realAvailableHomes.filter((h) => h.listingType === "sale").length;
 
   return (
     <Section tone="white" labelledBy="homes-heading">
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <SectionHeading
           id="homes-heading"
-          eyebrow="Available homes"
-          title="Ready sooner — or still yours to finish."
-          intro="Homes that are move-in ready or under construction. On homes still being built, you may be able to choose some of the finishes."
+          eyebrow="Available homes & properties"
+          title="Explore what’s available."
+          intro="Browse homes, multi-family properties and land for sale. See photos, prices and listing details to find your next step."
         />
         <TextLink href="/available-homes" className="shrink-0">
           View all available homes
@@ -106,8 +106,8 @@ export function AvailableHomesRow() {
           <h3 className="text-3xl">Looking for something specific?</h3>
           <dl className="mx-auto mt-8 grid max-w-xl grid-cols-3 gap-3">
             {[
-              { label: "Available", value: realAvailableHomes.length },
-              { label: "Move-in ready", value: readyNow },
+              { label: "Listings", value: realAvailableHomes.length },
+              { label: "For sale", value: forSale },
               { label: "Floor plans", value: floorPlans.filter((p) => !p.isSample).length },
             ].map((s) => (
               <div key={s.label} className="flex flex-col rounded-card bg-white/10 px-3 py-4">

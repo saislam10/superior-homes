@@ -7,11 +7,11 @@
  * Setup (one time, not a project dependency):
  *   npm install --no-save playwright-core
  * Run:
- *   npm run build && npm start            # in one terminal (port 3000)
+ *   npm run build && npm start            # in one terminal (port 3011)
  *   node scripts/smoke-test.mjs           # in another
  *
  * Env:
- *   BASE_URL     default http://localhost:3000
+ *   BASE_URL     default http://localhost:3011
  *   CHROME_PATH  path to a local Chrome/Edge executable. Defaults to the
  *                standard Windows Chrome location; on macOS use
  *                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome".
@@ -20,7 +20,7 @@
  */
 import { chromium } from "playwright-core";
 
-const BASE = process.env.BASE_URL ?? "http://localhost:3000";
+const BASE = process.env.BASE_URL ?? "http://localhost:3011";
 const CHROME = process.env.CHROME_PATH ?? "C:/Program Files/Google/Chrome/Application/chrome.exe";
 
 const pages = [

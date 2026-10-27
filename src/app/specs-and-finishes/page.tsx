@@ -7,6 +7,7 @@ import { ConsultationCta } from "@/components/sections/ConsultationCta";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { DraftNotice, Placeholder } from "@/components/ui/Placeholder";
 import { TextLink } from "@/components/ui/Button";
+import { previousSiteReview } from "@/data/previous-site-review";
 
 const path = "/specs-and-finishes";
 
@@ -38,7 +39,13 @@ export default function SpecsPage() {
         />
         <DraftNotice title="Owner input needed" className="mt-8 max-w-3xl">
           Each category needs the list of features Superior Homes includes as standard. These must come from the
-          company’s actual specifications.
+          company’s actual specifications. The previous website claimed the following; confirm each before treating
+          it as a current standard feature:
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            {previousSiteReview.featureClaims.map((claim) => (
+              <li key={claim}>{claim}</li>
+            ))}
+          </ul>
         </DraftNotice>
         <div className="mt-10 grid gap-px overflow-hidden rounded-card border border-mist-200 bg-mist-200 sm:grid-cols-2 lg:grid-cols-4">
           {specCategories.map((cat) => (

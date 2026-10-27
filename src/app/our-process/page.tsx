@@ -6,6 +6,7 @@ import { ConsultationCta } from "@/components/sections/ConsultationCta";
 import { Section } from "@/components/ui/Section";
 import { DraftNotice } from "@/components/ui/Placeholder";
 import { TextLink } from "@/components/ui/Button";
+import { previousSiteReview } from "@/data/previous-site-review";
 
 const path = "/our-process";
 
@@ -36,7 +37,9 @@ export default function OurProcessPage() {
         {!processReviewedByOwner && (
           <DraftNotice title="General outline — to be confirmed" className="mb-14 max-w-3xl">
             This describes a typical custom home process. The exact steps, order and timing for Superior Homes projects
-            will be confirmed by the owner, and every project’s schedule depends on its scope.
+          will be confirmed by the owner, and every project’s schedule depends on its scope. The previous process
+          page listed these stages: {previousSiteReview.processReview.stageNames.join(", ")}. Its descriptions also
+          refer to another builder and lender. {previousSiteReview.processReview.caution}
           </DraftNotice>
         )}
 

@@ -1,16 +1,16 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { buildMetadata } from "@/lib/seo";
-import { availableHomes, formatPrice, getAvailableHome, statusLabels } from "@/data/available-homes";
+import { availableHomes, formatPrice, getAvailableHome, getStatusLabel, propertyInquiryHref } from "@/data/available-homes";
 import { getCommunity } from "@/data/communities";
 import { getFloorPlan } from "@/data/floor-plans";
 import { PageHero } from "@/components/sections/PageHero";
 import { ConsultationCta } from "@/components/sections/ConsultationCta";
 import { Section } from "@/components/ui/Section";
-import { SpecRow, StatusBadge } from "@/components/ui/Listing";
+import { PropertySpecs, StatusBadge } from "@/components/ui/Listing";
 import { DraftNotice } from "@/components/ui/Placeholder";
 import { ButtonLink, TextLink } from "@/components/ui/Button";
+import { PhotoSlideshow } from "@/components/ui/PhotoSlideshow";
 
 /** Keep at least one home in src/data/available-homes.ts (Cache Components requirement). */
 export function generateStaticParams() {
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps<"/available-homes/[
   const home = getAvailableHome(slug);
   if (!home) return {};
   return buildMetadata({
-    title: `${home.address}, ${home.city}`,
+    title: home.city ? `${home.address}, ${home.city}` : `${home.address} | Superior Homes`,
     description: home.summary,
     path: `/available-homes/${home.slug}`,
     image: home.image,
@@ -38,14 +38,14 @@ export default async function AvailableHomePage({ params }: PageProps<"/availabl
   const path = `/available-homes/${home.slug}`;
   const community = home.communitySlug ? getCommunity(home.communitySlug) : undefined;
   const plan = home.floorPlanSlug ? getFloorPlan(home.floorPlanSlug) : undefined;
-  const [, ...gallery] = home.gallery;
+  const gallery = home.gallery;
 
   return (
     <>
       <PageHero
-        eyebrow={statusLabels[home.status]}
+        eyebrow={getStatusLabel(home.status, home.listingType)}
         title={home.address}
-        intro={home.city}
+        intro={home.city ?? "Location not provided in the public MLS preview."}
         breadcrumbs={[
           { name: "Available Homes", path: "/available-homes" },
           { name: home.address, path },
@@ -63,9 +63,12 @@ export default async function AvailableHomePage({ params }: PageProps<"/availabl
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
             <h2 id="home-overview-heading" className="text-3xl text-ink sm:text-4xl">
-              About this home
+              About this property
             </h2>
-            <p className="mt-6 text-lg leading-relaxed text-ink-muted">{home.summary}</p>
+            <p className="mt-6 text-lg leading-relaxed text-ink-muted">{home.description ?? home.summary}</p>
+            {home.sourceCheckedAt && (
+              <p className="mt-5 text-sm text-ink-subtle">Source: South Central Kansas MLS, checked {home.sourceCheckedAt}. Prices and availability can change; contact us to confirm current details.</p>
+            )}
             <h3 className="mt-10 text-2xl text-ink">Highlights</h3>
             <ul className="mt-4 space-y-2 text-ink-muted">
               {home.highlights.map((h, i) => (
@@ -75,15 +78,46 @@ export default async function AvailableHomePage({ params }: PageProps<"/availabl
                 </li>
               ))}
             </ul>
+            {home.details && home.details.length > 0 && (
+              <details className="mt-10 rounded-card border border-mist-200 p-5">
+                <summary className="cursor-pointer text-xl text-ink">All MLS property details</summary>
+                <dl className="mt-5 divide-y divide-mist-200">
+                  {home.details.map((detail, index) => (
+                    <div key={`${detail.label}-${index}`} className="grid gap-1 py-3 sm:grid-cols-2 sm:gap-4">
+                      <dt className="text-sm text-ink-subtle">{detail.label}</dt>
+                      <dd className="min-w-0 break-words text-sm text-ink">{detail.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
+            )}
           </div>
-          <aside aria-label="Home details" className="lg:col-span-5">
+          <aside aria-label="Property details" className="lg:col-span-5">
             <div className="rounded-card border border-mist-200 bg-surface p-6">
               <div className="flex items-center justify-between gap-4">
-                <StatusBadge status={home.status} />
-                <p className="font-display text-2xl text-ink">{formatPrice(home.price)}</p>
+                <StatusBadge status={home.status} listingType={home.listingType} />
+                <p className="font-display text-2xl text-ink">
+                  {home.listingType === "rent"
+                    ? home.monthlyRent == null
+                      ? "Contact for rent"
+                      : `${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(home.monthlyRent)}/mo`
+                    : formatPrice(home.price)}
+                </p>
               </div>
-              <SpecRow beds={home.beds} baths={home.baths} sqft={home.sqft} className="mt-5" />
+              <PropertySpecs home={home} className="mt-5" />
               <dl className="divide-y divide-mist-200">
+                {home.propertyType && <div className="flex justify-between gap-4 py-3"><dt className="text-ink-subtle">Property type</dt><dd className="text-right text-ink">{home.propertyType}</dd></div>}
+                {home.sourceStatus && <div className="flex justify-between gap-4 py-3"><dt className="text-ink-subtle">MLS status</dt><dd className="text-ink">{home.sourceStatus}</dd></div>}
+                {home.mlsNumber && <div className="flex justify-between gap-4 py-3"><dt className="text-ink-subtle">MLS number</dt><dd className="text-ink">{home.mlsNumber}</dd></div>}
+                {home.listingType === "rent" && (
+                  <>
+                    {home.securityDeposit != null && <div className="flex justify-between gap-4 py-3"><dt className="text-ink-subtle">Security deposit</dt><dd className="text-ink">{formatPrice(home.securityDeposit)}</dd></div>}
+                    {home.leaseTerm && <div className="flex justify-between gap-4 py-3"><dt className="text-ink-subtle">Lease term</dt><dd className="text-ink">{home.leaseTerm}</dd></div>}
+                    {home.applicationFee != null && <div className="flex justify-between gap-4 py-3"><dt className="text-ink-subtle">Application fee</dt><dd className="text-ink">{formatPrice(home.applicationFee)}</dd></div>}
+                    {home.petPolicy && <div className="py-3"><dt className="text-ink-subtle">Pet policy</dt><dd className="mt-1 text-ink">{home.petPolicy}</dd></div>}
+                    {home.utilitiesPolicy && <div className="py-3"><dt className="text-ink-subtle">Utilities</dt><dd className="mt-1 text-ink">{home.utilitiesPolicy}</dd></div>}
+                  </>
+                )}
                 {community && (
                   <div className="flex justify-between gap-4 py-3">
                     <dt className="text-ink-subtle">Community</dt>
@@ -111,9 +145,14 @@ export default async function AvailableHomePage({ params }: PageProps<"/availabl
                   </div>
                 )}
               </dl>
-              <ButtonLink href="/contact" withArrow className="mt-6 w-full">
-                Ask about this home
+              <ButtonLink href={propertyInquiryHref(home)} withArrow className="mt-6 w-full">
+                Ask about this property
               </ButtonLink>
+              {home.sourceUrl && (
+                <a href={home.sourceUrl} target="_blank" rel="noreferrer" className="mt-4 block text-center text-sm text-brand-800 underline underline-offset-4">
+                  View source MLS listing
+                </a>
+              )}
             </div>
           </aside>
         </div>
@@ -124,20 +163,14 @@ export default async function AvailableHomePage({ params }: PageProps<"/availabl
           <h2 id="home-gallery-heading" className="text-3xl text-ink">
             Gallery
           </h2>
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2">
-            {gallery.map((img) => (
-              <li key={img.src} className="relative aspect-[4/3] overflow-hidden rounded-card bg-mist-200">
-                <Image src={img.src} alt={img.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
-              </li>
-            ))}
-          </ul>
+          <div className="mt-10"><PhotoSlideshow images={gallery} label={`${home.address} gallery`} /></div>
           <TextLink href="/available-homes" className="mt-12">
             Back to available homes
           </TextLink>
         </Section>
       )}
 
-      <ConsultationCta title="Interested in this home?" />
+      <ConsultationCta title="Interested in this property?" body="Ask a question or arrange a viewing. We’ll include the property’s address and MLS number with your inquiry." contactHref={propertyInquiryHref(home)} inquirySubject={`Property inquiry — MLS #${home.mlsNumber} — ${home.address}`} />
     </>
   );
 }

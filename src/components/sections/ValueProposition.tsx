@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { images } from "@/config/images";
+import { remingtonGallery } from "@/config/images";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { TextLink } from "@/components/ui/Button";
 
@@ -54,8 +54,8 @@ export function ValueProposition() {
         </div>
         <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-mist-200 sm:aspect-[4/3] lg:aspect-[4/5]">
           <Image
-            src={images.openLiving.src}
-            alt={images.openLiving.alt}
+            src={remingtonGallery[2].src}
+            alt={remingtonGallery[2].alt}
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover"
