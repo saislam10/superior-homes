@@ -218,7 +218,7 @@ All three work the same way as the portfolio: edit the data file, and pages, car
 
 ### Stats bar, specs, finance, warranty, agents
 
-- **Stats bar** (`src/data/company-stats.ts`): plan and community counts come from real data; years of experience and homes built are `null` (placeholders) until the owner confirms them.
+- **Stats bar** (`src/data/company-stats.ts`): plan counts come from real entries. Owner-confirmed statistics are 23 years of experience, 1,700 homes sold and "10s" of communities. Sales are not described as homes built; specific community names/details still need to be supplied.
 - **Specs & finishes** (`src/data/specs.ts`): fill each category's `items` with what is actually included as standard.
 - **Finance, Warranty, Agents** pages (`src/app/finance`, `src/app/warranty`, `src/app/agents`) contain general guidance plus placeholders for company-specific terms (preferred lender, warranty coverage, agent policies).
 - **Visiting hours** (`site.ts → contact.visitingHours`) appear in the closing call-to-action when set. The CTA's "Call us" / "Email us" buttons appear once phone and email are configured.
@@ -337,23 +337,23 @@ DNS, registrar, hosting and SSL changes for the old domain are made outside this
 
 Information required from the owner (each item is currently a visible placeholder or a draft marker):
 
-- [ ] **Phone number** and **inquiry email** (`site.ts → contact`)
+- [x] **Phone number** and **inquiry email** (`site.ts → contact`)
 - [ ] **Address**, or confirmation that the business is service-area only (must match the Google Business Profile)
 - [ ] **Legal entity name** (e.g. "Superior Homes, LLC"), if it differs from the company name
 - [ ] **Office hours** (optional)
 - [ ] **Google Business Profile URL** and any **social media profiles** the company controls
 - [ ] **Service areas**: confirm or remove each "proposed" community
-- [ ] **About page**: company story, years of experience, owner/team names, roles, bios and photos
+- [ ] **About page**: company story, owner/team names, roles, bios and photos (23 years of experience is confirmed)
 - [ ] **Licensing, insurance, memberships**: only those that can be verified
 - [ ] **Warranty** details (FAQ placeholder)
 - [ ] **Process**: confirm or edit the seven stages, then set `processReviewedByOwner = true`
 - [ ] **FAQs** marked "Draft": confirm or rewrite each, then remove `needsOwnerReview`
 - [ ] **"Why Superior Homes" points** (`data/approach.ts`) and contact-page follow-up commitments: confirm they reflect actual practice
 - [ ] **Real project photos and details**, with homeowner permission, to replace samples
-- [ ] **Floor plans**: real plan names, specs, drawings/photos (and starting prices only if they will be kept current)
-- [ ] **Available homes inventory**: addresses, status, specs, photos, pricing (or "contact for pricing")
+- [x] **Floor plans**: real plan names, specs, drawings/photos supplied; starting prices remain optional
+- [x] **Available homes inventory**: 62 owner-supplied MLS sale listings with details and photos (snapshot needs ongoing refresh)
 - [ ] **Communities**: real neighborhoods/developments with unique details
-- [ ] **Stats**: years of experience and homes built (verifiable numbers only)
+- [x] **Stats**: 23 years of experience, 1,700 homes sold, "10s" of communities (owner-confirmed; sales are not a build count)
 - [ ] **Standard specifications** for each category on Specs & Finishes, and selection process details
 - [ ] **Preferred lender(s)**, if any, with required disclosures
 - [ ] **Agent policies**: registration, compensation, showings

@@ -4,6 +4,7 @@ import { images, type SiteImage } from "@/config/images";
 import { siteConfig } from "@/config/site";
 import { approachPoints } from "@/data/approach";
 import { previousSiteReview } from "@/data/previous-site-review";
+import { ownerStats } from "@/data/company-stats";
 import { PageHero } from "@/components/sections/PageHero";
 import { ConsultationCta } from "@/components/sections/ConsultationCta";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -47,7 +48,7 @@ export default function AboutPage() {
 
       <Section labelledBy="story-heading">
         <DraftNotice title="Owner input needed" className="mb-12 max-w-3xl">
-          This page contains placeholders for the company story, team and experience. Each bracketed item must be
+          This page contains placeholders for the company story, team and credentials. Each bracketed item must be
           replaced with confirmed information from the owner before launch. The previous site emphasized{" "}
           {previousSiteReview.featureClaims[3].toLowerCase()}; confirm whether those remain part of the company’s
           positioning. Avoid promises of lower utility bills unless they can be substantiated.
@@ -68,7 +69,8 @@ export default function AboutPage() {
                 </Placeholder>
               </p>
               <p>
-                <Placeholder>Experience — years building, types of homes built, areas served (confirmed facts only)</Placeholder>
+                <ValueOrPlaceholder value={ownerStats.yearsExperience} label="Years of experience" /> years of experience and{" "}
+                <ValueOrPlaceholder value={ownerStats.homesSold} label="Homes sold" /> homes sold.
               </p>
               <p>
                 <Placeholder>Licensing, insurance and memberships — only those that can be verified</Placeholder>
